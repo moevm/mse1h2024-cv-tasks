@@ -11,9 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # opencv, PIL, pytorch-gpu, onnx
-RUN pip install pip install opencv-python pillow \
-    && pip install torch==1.9.0+cpu torchvision==0.10.0+cpu torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html \
-    && onnx
+RUN pip install opencv-python pillow onnx\
+    && pip install torch==1.9.0+cpu torchvision==0.10.0+cpu torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
 
 # tensor-rt
 RUN mkdir /tmp/tensorrt && cd /tmp/tensorrt && \
@@ -36,4 +35,3 @@ CMD ["python", "main.py"]
 
 # для сборки:
 # docker build --build-arg DATASET=<some_kaggle_dataset_url> -t base-container .
-
