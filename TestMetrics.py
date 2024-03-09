@@ -1,4 +1,5 @@
-from src.metrics import PrecisionChecker
+from src.metrics.AccuracyChecker import AccuracyChecker
+from src.metrics.PrecisionChecker import PrecisionChecker
 import numpy as np
 
 # Example
@@ -9,6 +10,10 @@ if __name__ == "__main__":
 
     precision_checker = PrecisionChecker("Precision")
     precision = precision_checker.calculate_metric(predictions, ground_truth)
-    interpretation = precision_checker.interpret_result(precision)
+    precision_interpretation = precision_checker.interpret_result(precision)
+    print("Precision:", precision_interpretation)
 
-    print(interpretation)
+    accuracy_checker = AccuracyChecker("Accuracy")
+    accuracy = accuracy_checker.calculate_metric(predictions, ground_truth)
+    accuracy_interpretation = accuracy_checker.interpret_result(accuracy)
+    print("Accuracy:", accuracy_interpretation)
