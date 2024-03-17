@@ -3,9 +3,9 @@ import subprocess
 import shutil
 from pathlib import Path
 
-JSON_PATH = "./right_requests.json"
+JSON_PATH = "../right_requests.json"
 SOURCE_DIR_PATH = "."
-DEST_DIR_PATH = "./app_files"
+DEST_DIR_PATH = "../../../app_files"
 
 with open(JSON_PATH) as f:
     data = json.load(f)
