@@ -1,23 +1,37 @@
-FROM nvidia/cuda:11.0.3-base-ubuntu20.04
+FROM python:3.8-slim
 
 # Необходимые пакеты
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libopencv-dev \
+    libopenblas-dev \
+    libjpeg-dev \
     wget \
-    unzip 
-    
-# Install python packages
-COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt
+    unzip \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
-RUN python3 -m pip install --upgrade pip
+# opencv, PIL, pytorch-gpu, onnx
+RUN pip install opencv-python pillow onnx\
+    && pip install torch==1.9.0+cpu torchvision==0.10.0+cpu torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
 
-# Install PyTorch
-RUN pip3 install tensorrt==8.6.1
-
-# Очистка кэша apt-get
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# tensor-rt
+RUN mkdir /tmp/tensorrt && cd /tmp/tensorrt && \
+    wget https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb && \
+    dpkg -i nvidia-machine-learning-repo-*.deb && \
+    apt-get update && \
+    apt-get install -y libnvinfer7=7.x.y-z+cuda10.x libnvinfer-dev=7.x.y-z+cuda10.x libnvinfer-plugin7=7.x.y-z+cuda10.x
 
 WORKDIR /app
+
+# kaggle 
+ARG DATASET
+RUN wget -O dataset.zip $DATASET \
+    && unzip dataset.zip \
+    && rm dataset.zip
+    
+# Для примера
+ADD main.py . 
+CMD ["python", "main.py"]
+
+# для сборки:
+# docker build --build-arg DATASET=<some_kaggle_dataset_url> -t base-container .
