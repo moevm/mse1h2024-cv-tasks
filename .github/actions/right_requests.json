@@ -1,0 +1,24 @@
+[
+  {
+    "files": [
+      {
+        "path": "a",
+        "additions": 1,
+        "deletions": 0
+      }
+    ],
+    "number": 1,
+    "title": "Create a"
+  },
+  {
+    "files": [
+      {
+        "path": "b",
+        "additions": 1,
+        "deletions": 0
+      }
+    ],
+    "number": 2,
+    "title": "Create b"
+  }
+]
