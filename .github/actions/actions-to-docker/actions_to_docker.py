@@ -1,22 +1,21 @@
+import os
 import json
 import subprocess
 import shutil
 from pathlib import Path
 
-JSON_PATH = "../right_requests.json"
-SOURCE_DIR_PATH = "."
-DEST_DIR_PATH = "../../../app_files"
+SOURCE_DIR_PATH = f"{os.environ['GITHUB_WORKSPACE']}"
+DEST_DIR_PATH = f"{os.environ['GITHUB_WORKSPACE']}/pull-request-data"
 
-with open(JSON_PATH) as f:
-    data = json.load(f)
+data = json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 print(data)
 
-for i in range (len(data)):
+for i in range(len(data)):
     command = "gh pr checkout "+str(data[i]["number"])
     subprocess.run(command, shell=True, executable="/bin/bash")
     for file in data[i]["files"]:
-        source_path = file["path"]
-        destination_path = "app_files/"+source_path
+        source_path = SOURCE_DIR_PATH + file["path"]
+        destination_path = DEST_DIR_PATH + file["path"] 
         destination_path = "/".join(destination_path.split("/")[:-1])
         Path(destination_path).mkdir(parents=True, exist_ok=True)
         shutil.copy(source_path, destination_path)
