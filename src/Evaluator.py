@@ -33,17 +33,33 @@ class ModelEvaluator:
     def evaluate(self):
         dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)
 
-        predictions, ground_truth = torch.utils.data.random_split(self.df['label'], [self.predictions_len, self.ground_truth_len])
+        predictions, ground_truth = torch.utils.data.random_split(self.df["label"], [self.predictions_len, self.ground_truth_len])
         #
         #
-        # predictions_loader = DataLoader(predictions, self.batch_size, True)
-        # ground_truth_loader = DataLoader(ground_truth, self.batch_size, True)
-        new_data = self.df['label'].tolist()
-        random.shuffle(new_data)
-        train  = new_data[17000:]
+        ground_truth_list = list(ground_truth)
+        predictions_list = list(predictions)
 
-        print(train)
-        metrics = self.calculate_metrics(self.df['label'].tolist(),self.df['label'].tolist())
+        #print(ground_truth_list)
+        #print(predictions_list)
+
+        predictions_loader = DataLoader(predictions, self.batch_size, True)
+        ground_truth_loader = DataLoader(ground_truth, self.batch_size, True)
+
+
+
+        #new_data = self.df['label'].tolist()
+        # random.shuffle(new_data)
+        # train  = new_data[17000:]
+        #
+        # print(train)
+
+
+        #l1 = next(iter(ground_truth))
+       # l2 = next(iter(predictions_loader))
+       # print(ground_truth)
+       # print(l2)
+
+        metrics = self.calculate_metrics(predictions_list, ground_truth_list)
 
         return metrics
 
@@ -123,8 +139,10 @@ if __name__ == "__main__":
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, 6)
 
+
+
     eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
-                            "./dataset/datasets/train-scene/train/"), 64, 34,17000,  "./dataset/datasets/train-scene/train.csv")
+                            "./dataset/datasets/train-scene/train/"), 64, 8517,8517,  "./dataset/datasets/train-scene/train.csv")
 
 
 
