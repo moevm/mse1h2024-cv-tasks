@@ -113,7 +113,7 @@ class ModelEvaluator:
         # avg_roc_auc = np.mean(roc_aucs)
         # metric_values["Average ROC-AUC"] = avg_roc_auc
         # metric_interpretations["Average ROC-AUC"] = f"{avg_roc_auc:.2%}"
-    
+
 
         # Calculate averages
         average_precision = np.mean(list(metric_values.values()))
@@ -144,9 +144,12 @@ if __name__ == "__main__":
     model.fc = nn.Linear(model.fc.in_features, 6)
 
     # Instantiate ModelEvaluator
-    eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
-                                                 "./dataset/datasets/train-scene/train/"),
-                         64, 8517, 8517, "./dataset/datasets/train-scene/train.csv")
+    # Instantiate ModelEvaluator
+    # Instantiate ModelEvaluator
+    eva = ModelEvaluator(model, DatasetInterface("./src/dataset/dataset/datasets/train-scene/train.csv",
+                                             "./src/dataset/datasets/train-scene/train/"),
+                     64, 8517, 8517, "./src/dataset/dataset/datasets/train-scene/train.csv")
+
 
     # Evaluate the model
     metrics = eva.evaluate()
