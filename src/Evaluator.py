@@ -10,9 +10,14 @@ from sklearn.metrics import auc
 from dataset import DatasetInterface
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
+from metrics.RecallChecker import RecallChecker
+from metrics.ROCAUCChecker import ROCAUCChecker
+from metrics.F1ScoreChecker import F1ScoreChecker
 from metrics.AccuracyChecker import AccuracyChecker
+from metrics.PrecisionChecker import PrecisionChecker
 from torch.utils.data import DataLoader, SubsetRandomSampler
 
+from sklearn.metrics import roc_curve, auc
 
 # Define a class for evaluating a model
 class ModelEvaluator:
@@ -52,16 +57,14 @@ class ModelEvaluator:
         ground_truth_list = list(ground_truth)
         predictions_list = list(predictions)
 
-        # Print ground truth list for inspection
-        print("Ground Truth List:")
-        print(ground_truth_list)
+        # Convert predictions to numpy array
+        predictions_array = np.array(predictions_list)
 
-        # Create DataLoader for predictions and ground truth
-        predictions_loader = DataLoader(predictions, self.batch_size, True)
-        ground_truth_loader = DataLoader(ground_truth, self.batch_size, True)
+        # Reshape predictions_array to ensure it's two-dimensional
+        predictions_array = predictions_array.reshape(-1, 1)
 
         # Calculate metrics
-        metrics = self.calculate_metrics(predictions_list, ground_truth_list)
+        metrics = self.calculate_metrics(predictions_array, ground_truth_list)
 
         return metrics
 
@@ -81,10 +84,10 @@ class ModelEvaluator:
         metric_interpretations = {}
 
         # Precision
-        # precision_checker = PrecisionChecker("Precision")
-        # precision = precision_checker.calculate_metric(predictions, ground_truth)
-        # metric_values["Precision"] = precision
-        # metric_interpretations["Precision"] = f"{precision:.2%}"
+        precision_checker = PrecisionChecker("Precision", average='macro')
+        precision = precision_checker.calculate_metric(predictions, ground_truth)
+        metric_values["Precision"] = precision
+        metric_interpretations["Precision"] = f"{precision:.2%}"
 
         # Accuracy
         accuracy_checker = AccuracyChecker("Accuracy")
@@ -93,41 +96,42 @@ class ModelEvaluator:
         metric_interpretations["Accuracy"] = f"{accuracy:.2%}"
 
         # Recall
-        # recall_checker = RecallChecker("Recall")
-        # recall = recall_checker.calculate_metric(predictions, ground_truth)
-        # metric_values["Recall"] = recall
-        # metric_interpretations["Recall"] = f"{recall:.2%}"
+        recall_checker = RecallChecker("Recall", average='macro')
+        recall = recall_checker.calculate_metric(predictions, ground_truth)
+        metric_values["Recall"] = recall
+        metric_interpretations["Recall"] = f"{recall:.2%}"
 
         # F1-score
-        # f1_score_checker = F1ScoreChecker("F1-score")
-        # f1_score = f1_score_checker.calculate_metric(predictions, ground_truth)
-        # metric_values["F1-score"] = f1_score
-        # metric_interpretations["F1-score"] = f"{f1_score:.2%}"
+        f1_score_checker = F1ScoreChecker("F1-score", average='macro')
+        f1_score = f1_score_checker.calculate_metric(predictions, ground_truth)
+        metric_values["F1-score"] = f1_score
+        metric_interpretations["F1-score"] = f"{f1_score:.2%}"
 
-        # ROC-AUC
+        # ROC-AUC for each class
         # roc_auc_checker = ROCAUCChecker("ROC-AUC")
-        # fpr, tpr, thresholds = roc_auc_checker.calculate_metric(predictions, ground_truth)
-        # roc_auc = auc(fpr, tpr)
-        # metric_values["ROC-AUC"] = roc_auc
-        # metric_interpretations["ROC-AUC"] = f"{roc_auc:.2%}"
+        # fprs, tprs, roc_aucs = roc_auc_checker.calculate_metric(predictions, ground_truth_one_hot)
+        # avg_roc_auc = np.mean(roc_aucs)
+        # metric_values["Average ROC-AUC"] = avg_roc_auc
+        # metric_interpretations["Average ROC-AUC"] = f"{avg_roc_auc:.2%}"
+    
 
         # Calculate averages
-        # average_precision = np.mean(list(metric_values.values()))
+        average_precision = np.mean(list(metric_values.values()))
         average_accuracy = np.mean(list(metric_values.values()))
-        # average_recall = np.mean(list(metric_values.values()))
-        # average_f1_score = np.mean(list(metric_values.values()))
-        # average_roc_auc = np.mean(list(metric_values.values()))
+        average_recall = np.mean(list(metric_values.values()))
+        average_f1_score = np.mean(list(metric_values.values()))
+        #average_roc_auc = np.mean(list(metric_values.values()))
 
         # Return metrics and interpretations as tuples
         metrics = {
             **metric_values,
             **metric_interpretations,
-           # "Average Precision": average_precision,
+            "Average Precision": average_precision,
             "Average Accuracy": average_accuracy,
-            #"Average Recall": average_recall,
-         #   "Average F1-score": average_f1_score,
-         #   "Average ROC-AUC": average_roc_auc,
-          #  "ROC Curve": (fpr, tpr, roc_auc)
+            "Average Recall": average_recall,
+            "Average F1-score": average_f1_score,
+            #"Average ROC-AUC": average_roc_auc,
+            #"ROC Curve": (fpr, tpr, roc_auc)
         }
 
         return metrics
@@ -151,16 +155,6 @@ if __name__ == "__main__":
     for metric_name, metric_value in metrics.items():
         print(f"{metric_name}: {metric_value}")
 
-    # predictions = np.array([0, 0, 1, 0, 1])
-    # ground_truth = np.array([0, 1, 1, 1, 0])
-    #
-    # metrics = calculate_metrics(predictions, ground_truth)
-    # for metric_name, metric_info in metrics.items():
-    #     if isinstance(metric_info, tuple):
-    #         print(f"{metric_name}: {metric_info[1]}")
-    #     else:
-    #         print(f"{metric_name}: {metric_info}")
-    #
     # # Plot ROC curve
     # fpr, tpr, roc_auc = metrics["ROC Curve"]
     # plt.figure()
