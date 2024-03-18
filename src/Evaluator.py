@@ -1,28 +1,33 @@
-from random import random
-
+import torch
 import numpy as np
-import torch
-from sklearn.metrics import auc
-from torch import classes
-from torch.utils.data import DataLoader
-
-from dataset import DatasetInterface
-
-from metrics.AccuracyChecker import AccuracyChecker
 import pandas as pd
-
-import torch
 import torch.nn as nn
+from torch import classes
+from random import random
 import torch.optim as optim
-from torch.utils.data import DataLoader, SubsetRandomSampler
-from torchvision import transforms, datasets
 from torchvision import models
+from sklearn.metrics import auc
+from dataset import DatasetInterface
+from torch.utils.data import DataLoader
+from torchvision import transforms, datasets
+from metrics.AccuracyChecker import AccuracyChecker
+from torch.utils.data import DataLoader, SubsetRandomSampler
 
 
-# from TestMetrics import calculate_metrics
-
+# Define a class for evaluating a model
 class ModelEvaluator:
     def __init__(self, model, dataset, batch_size, predictions_len, ground_truth_len, filename):
+        """
+        Initialize the ModelEvaluator.
+
+        Args:
+            model: The model to be evaluated.
+            dataset: The dataset to be used for evaluation.
+            batch_size: Batch size for DataLoader.
+            predictions_len: Length of predictions for splitting dataset.
+            ground_truth_len: Length of ground truth for splitting dataset.
+            filename: CSV filename.
+        """
         self.model = model
         self.dataset = dataset
         self.batch_size = batch_size
@@ -31,39 +36,46 @@ class ModelEvaluator:
         self.df = pd.read_csv(filename)
 
     def evaluate(self):
+        """
+        Perform evaluation.
+
+        Returns:
+            Dictionary containing evaluation metrics.
+        """
+        # Create DataLoader for the dataset
         dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)
 
+        # Split the dataset into predictions and ground truth
         predictions, ground_truth = torch.utils.data.random_split(self.df["label"], [self.predictions_len, self.ground_truth_len])
-        #
-        #
+
+        # Convert predictions and ground truth to lists
         ground_truth_list = list(ground_truth)
         predictions_list = list(predictions)
 
-        #print(ground_truth_list)
-        #print(predictions_list)
+        # Print ground truth list for inspection
+        print("Ground Truth List:")
+        print(ground_truth_list)
 
+        # Create DataLoader for predictions and ground truth
         predictions_loader = DataLoader(predictions, self.batch_size, True)
         ground_truth_loader = DataLoader(ground_truth, self.batch_size, True)
 
-
-
-        #new_data = self.df['label'].tolist()
-        # random.shuffle(new_data)
-        # train  = new_data[17000:]
-        #
-        # print(train)
-
-
-        #l1 = next(iter(ground_truth))
-       # l2 = next(iter(predictions_loader))
-       # print(ground_truth)
-       # print(l2)
-
+        # Calculate metrics
         metrics = self.calculate_metrics(predictions_list, ground_truth_list)
 
         return metrics
 
     def calculate_metrics(self, predictions, ground_truth):
+        """
+        Calculate evaluation metrics.
+
+        Args:
+            predictions: List of predicted labels.
+            ground_truth: List of ground truth labels.
+
+        Returns:
+            Dictionary containing evaluation metrics.
+        """
         # Initialize containers for metric values and interpretations
         metric_values = {}
         metric_interpretations = {}
@@ -121,44 +133,23 @@ class ModelEvaluator:
         return metrics
 
 
-
 # Example usage
 if __name__ == "__main__":
-    # data = ...
-    # labels = ...
-    # model = SimpleCNN()  # Instantiate the SimpleCNN model
-    # dataset = SimpleDataset(data, labels)  # Instantiate the SimpleDataset dataset
-    # batch_size = 64
-    #
-    # evaluator = ModelEvaluator(model, dataset, batch_size)
-
-
-
-
-
+    # Load pre-trained ResNet18 model
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, 6)
 
-
-
+    # Instantiate ModelEvaluator
     eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
-                            "./dataset/datasets/train-scene/train/"), 64, 8517,8517,  "./dataset/datasets/train-scene/train.csv")
+                                                 "./dataset/datasets/train-scene/train/"),
+                         64, 8517, 8517, "./dataset/datasets/train-scene/train.csv")
 
-
-
+    # Evaluate the model
     metrics = eva.evaluate()
+
+    # Print evaluation metrics
     for metric_name, metric_value in metrics.items():
         print(f"{metric_name}: {metric_value}")
-
-
-
-
-
-
-
-
-
-
 
     # predictions = np.array([0, 0, 1, 0, 1])
     # ground_truth = np.array([0, 1, 1, 1, 0])
@@ -180,5 +171,3 @@ if __name__ == "__main__":
     # plt.title('Receiver Operating Characteristic Curve')
     # plt.legend(loc="lower right")
     # plt.show()
-
-
