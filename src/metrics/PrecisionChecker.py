@@ -6,8 +6,9 @@ class PrecisionChecker(MetricsInterface):
     A class implementing precision metric checker.
     """
     
-    def __init__(self, name):
+    def __init__(self, name, average='macro'):
         super().__init__(name)
+        self.average = average
     
     def calculate_metric(self, predictions, ground_truth):
         """
@@ -20,7 +21,7 @@ class PrecisionChecker(MetricsInterface):
         Returns:
         - The calculated precision.
         """
-        return precision_score(ground_truth, predictions)
+        return precision_score(ground_truth, predictions, average=self.average)
     
     def interpret_result(self, precision):
         """
