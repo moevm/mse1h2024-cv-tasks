@@ -7,6 +7,7 @@ from random import random
 import torch.optim as optim
 from torchvision import models
 from sklearn.metrics import auc
+import matplotlib.pyplot as plt
 from dataset import DatasetInterface
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
@@ -16,8 +17,6 @@ from metrics.F1ScoreChecker import F1ScoreChecker
 from metrics.AccuracyChecker import AccuracyChecker
 from metrics.PrecisionChecker import PrecisionChecker
 from torch.utils.data import DataLoader, SubsetRandomSampler
-
-from sklearn.metrics import roc_curve, auc
 
 # Define a class for evaluating a model
 class ModelEvaluator:
@@ -63,11 +62,14 @@ class ModelEvaluator:
         # Reshape predictions_array to ensure it's two-dimensional
         predictions_array = predictions_array.reshape(-1, 1)
 
+        # Reshape ground_truth array to ensure it's two-dimensional
+        ground_truth_array = np.array(ground_truth_list).reshape(-1, 1)
+
         # Calculate metrics
-        metrics = self.calculate_metrics(predictions_array, ground_truth_list)
+        metrics = self.calculate_metrics(predictions_array, ground_truth_array)
 
         return metrics
-
+    
     def calculate_metrics(self, predictions, ground_truth):
         """
         Calculate evaluation metrics.
@@ -108,11 +110,11 @@ class ModelEvaluator:
         metric_interpretations["F1-score"] = f"{f1_score:.2%}"
 
         # ROC-AUC for each class
-        # roc_auc_checker = ROCAUCChecker("ROC-AUC")
-        # fprs, tprs, roc_aucs = roc_auc_checker.calculate_metric(predictions, ground_truth_one_hot)
-        # avg_roc_auc = np.mean(roc_aucs)
-        # metric_values["Average ROC-AUC"] = avg_roc_auc
-        # metric_interpretations["Average ROC-AUC"] = f"{avg_roc_auc:.2%}"
+        roc_auc_checker = ROCAUCChecker("ROC-AUC")
+        fprs, tprs, roc_aucs = roc_auc_checker.calculate_metric(predictions, ground_truth)
+        avg_roc_auc = np.mean(roc_aucs)
+        metric_values["ROC-AUC"] = avg_roc_auc
+        metric_interpretations["ROC-AUC"] = f"{avg_roc_auc:.2%}"
 
 
         # Calculate averages
@@ -120,7 +122,7 @@ class ModelEvaluator:
         average_accuracy = np.mean(list(metric_values.values()))
         average_recall = np.mean(list(metric_values.values()))
         average_f1_score = np.mean(list(metric_values.values()))
-        #average_roc_auc = np.mean(list(metric_values.values()))
+        average_roc_auc = np.mean(list(metric_values.values()))
 
         # Return metrics and interpretations as tuples
         metrics = {
@@ -130,8 +132,8 @@ class ModelEvaluator:
             "Average Accuracy": average_accuracy,
             "Average Recall": average_recall,
             "Average F1-score": average_f1_score,
-            #"Average ROC-AUC": average_roc_auc,
-            #"ROC Curve": (fpr, tpr, roc_auc)
+            "Average ROC-AUC": average_roc_auc,
+            "ROC Curve": (fprs, tprs, avg_roc_auc)
         }
 
         return metrics
@@ -143,8 +145,6 @@ if __name__ == "__main__":
     model = models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, 6)
 
-    # Instantiate ModelEvaluator
-    # Instantiate ModelEvaluator
     # Instantiate ModelEvaluator
     eva = ModelEvaluator(model, DatasetInterface("./src/dataset/dataset/datasets/train-scene/train.csv",
                                              "./src/dataset/datasets/train-scene/train/"),
@@ -158,13 +158,34 @@ if __name__ == "__main__":
     for metric_name, metric_value in metrics.items():
         print(f"{metric_name}: {metric_value}")
 
-    # # Plot ROC curve
-    # fpr, tpr, roc_auc = metrics["ROC Curve"]
-    # plt.figure()
-    # plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
-    # plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    # plt.xlabel('False Positive Rate')
-    # plt.ylabel('True Positive Rate')
-    # plt.title('Receiver Operating Characteristic Curve')
-    # plt.legend(loc="lower right")
-    # plt.show()
+      # Plot ROC curve
+    roc_curve_data = metrics["ROC Curve"]
+    plt.figure(figsize=(10, 8))
+
+    # Plot ROC curve for each class
+    for i in range(len(roc_curve_data[0])):
+        fpr_class = roc_curve_data[0][i]
+        tpr_class = roc_curve_data[1][i]
+        roc_auc_class = roc_curve_data[2]
+        plt.plot(fpr_class, tpr_class, lw=2, color='red', label=f'ROC curve (class {i + 1}) (AUC = {roc_auc_class:.2f})')
+
+    # Plot the diagonal line (random classifier)
+    plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')
+
+    # Set labels and title
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+
+    # Customize legend position
+    plt.legend(loc="lower right")
+
+    # Show grid
+    plt.grid(True)
+
+    # Set axis limits
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.0])
+
+    # Show plot
+    plt.show()

@@ -16,8 +16,8 @@ class ROCAUCChecker(MetricsInterface):
         roc_aucs = []
 
         # Compute ROC curve and ROC AUC for each class
-        for class_label in range(predictions.shape[1]):
-            fpr, tpr, _ = roc_curve(ground_truth[:, class_label], predictions[:, class_label])
+        for class_index in range(predictions.shape[1]):
+            fpr, tpr, _ = roc_curve(ground_truth[:, class_index], predictions[:, class_index], pos_label=class_index)
             roc_auc = auc(fpr, tpr)
             fprs.append(fpr)
             tprs.append(tpr)
@@ -27,5 +27,7 @@ class ROCAUCChecker(MetricsInterface):
     
     def interpret_result(self, roc_aucs):
         # Average ROC AUC over all classes
-        avg_roc_auc = sum(roc_aucs) / len(roc_aucs)
+        avg_roc_auc = np.mean(roc_aucs)
         return f"Average ROC-AUC: {avg_roc_auc * 100:.2f}%"
+
+
