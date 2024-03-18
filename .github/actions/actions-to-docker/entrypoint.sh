@@ -4,6 +4,9 @@ cd $GITHUB_WORKSPACE/$ACTION_WORKSPACE
 
 mkdir ~/.ssh
 
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+echo $PRIVATE_SSH_KEY | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+echo $PUBLIC_SSH_KEY > ~/.ssh/id_rsa.pub
+ssh-keyscan github.com > ~/.ssh/known_hosts
 
-# python actions_to_docker.py
+python actions_to_docker.py

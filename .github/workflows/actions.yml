@@ -8,9 +8,12 @@ jobs:
       - name: Custom action
         id: check
         uses: ./.github/actions/check-pull-requests
+      - run: mkdir pull-request-data
       - name: Custom action
         uses: ./.github/actions/actions-to-docker
         with:
           correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+        env:
+          PUBLIC_SSH_KEY: "${{ secrets.PUBLIC_SSH_KEY }}"
+          PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_SSH_KEY }}"
       - run: tail -f /dev/null
-      # - run: echo "${{ steps.check.outputs.correctPullRequests }}"

@@ -14,8 +14,9 @@ for i in range(len(data)):
     command = "gh pr checkout "+str(data[i]["number"])
     subprocess.run(command, shell=True, executable="/bin/bash")
     for file in data[i]["files"]:
-        source_path = SOURCE_DIR_PATH + file["path"]
-        destination_path = DEST_DIR_PATH + file["path"] 
+        source_path = SOURCE_DIR_PATH + '/' + file["path"]
+        destination_path = DEST_DIR_PATH + '/' + file["path"] 
         destination_path = "/".join(destination_path.split("/")[:-1])
         Path(destination_path).mkdir(parents=True, exist_ok=True)
         shutil.copy(source_path, destination_path)
+
