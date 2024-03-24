@@ -11,8 +11,8 @@ data = json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 print(data)
 
 for i in range(len(data)):
-    if(not data[i]["correct"]:
-    	continue
+    if not data[i]["correct"]:
+        continue
     command = "gh pr checkout "+str(data[i]["number"])
     subprocess.run(command, shell=True, executable="/bin/bash")
     for file in data[i]["files"]:

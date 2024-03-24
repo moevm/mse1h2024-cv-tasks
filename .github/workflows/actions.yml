@@ -5,15 +5,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
-      - name: Custom action
+      - name: Check pull requests 
         id: check
         uses: ./.github/actions/check-pull-requests
       - run: mkdir pull-request-data
-      - name: Custom action
+      - name: Copy pull-requests files 
         uses: ./.github/actions/actions-to-docker
         with:
           correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
         env:
           PUBLIC_SSH_KEY: "${{ secrets.PUBLIC_SSH_KEY }}"
           PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_SSH_KEY }}"
+      - uses: actions/checkout@v4.1.1
+      - name: Comment pull-requests
+        uses: ./.github/actions/comment_writer
+        with:
+          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
       - run: tail -f /dev/null

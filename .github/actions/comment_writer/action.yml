@@ -1,6 +1,6 @@
 name: "Comment Writer"
 description: "Write comment in all pull request after checking"
-input:
+inputs:
   correctPullRequests:
     description: "JSON that contais information of all correct open pull-requests, including their title, number and changed files"
 runs:
