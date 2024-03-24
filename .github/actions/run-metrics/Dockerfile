@@ -21,4 +21,4 @@ RUN pip3 install tensorrt==8.6.1
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY main.py /main.py
 
-CMD ["python3", "main.py"]
+CMD ["python3", "/main.py"]
