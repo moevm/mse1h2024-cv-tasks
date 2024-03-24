@@ -33,4 +33,4 @@ class RecallChecker(MetricsInterface):
         Returns:
         - A human-readable interpretation of the recall.
         """
-        return f"Recall: {recall * 100:.2f}%"
+        return recall * 100

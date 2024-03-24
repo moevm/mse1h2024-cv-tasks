@@ -10,4 +10,4 @@ class F1ScoreChecker(MetricsInterface):
         return f1_score(ground_truth, predictions, average=self.average)
     
     def interpret_result(self, f1_score):
-        return f"F1-score: {f1_score * 100:.2f}%"
+        return f1_score * 100

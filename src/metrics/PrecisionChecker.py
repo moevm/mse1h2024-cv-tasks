@@ -33,4 +33,4 @@ class PrecisionChecker(MetricsInterface):
         Returns:
         - A human-readable interpretation of the precision.
         """
-        return f"Precision: {precision * 100:.2f}%"
+        return precision * 100
