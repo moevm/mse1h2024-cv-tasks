@@ -19,6 +19,6 @@ RUN pip3 install tensorrt==8.6.1
 
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-COPY main.py main.py
+COPY main.py /main.py
 
 CMD ["python3", "main.py"]
