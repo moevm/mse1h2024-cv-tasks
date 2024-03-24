@@ -12,7 +12,7 @@ from dataset import DatasetInterface
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
 
-from dataset.ResizeImages import resize
+#from dataset.ResizeImages import resize
 from metrics.RecallChecker import RecallChecker
 from metrics.ROCAUCChecker import ROCAUCChecker
 from metrics.F1ScoreChecker import F1ScoreChecker
@@ -21,6 +21,7 @@ from metrics.PrecisionChecker import PrecisionChecker
 from torch.utils.data import DataLoader, SubsetRandomSampler
 import warnings
 warnings.filterwarnings('ignore')
+from Model import model
 
 import PIL
 import os
@@ -156,6 +157,15 @@ class ModelEvaluator:
 
         return [precision,accuracy, recall, f1_score]
 
+def resize(path="r'./datasets/train-scene/train'", size = 150):
+
+
+    f = r'./dataset/datasets/train-scene/train'
+    for file in os.listdir(f):
+        f_img = f + "/" + file
+        img = Image.open(f_img)
+        img = img.resize((150, 150))
+        img.save(f_img)
 
 # Example usage
 if __name__ == "__main__":
@@ -163,18 +173,18 @@ if __name__ == "__main__":
 
 
     # RESIZE ALL IMAGES
-    #resize()
-    
+    resize()
+
 
 
     # Load pre-trained ResNet18 model
-    model = models.resnet18(weights='IMAGENET1K_V1')
-    model.fc = nn.Linear(model.fc.in_features, 6)
+    # model = models.resnet18(weights='IMAGENET1K_V1')
+    # model.fc = nn.Linear(model.fc.in_features, 6)
 
     # Instantiate ModelEvaluator
     eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
-                                             "./dataset/datasets/train-scene/train/"),
-                     64, 8517, 8517, "./dataset/datasets/train-scene/train.csv")
+                                                 "./dataset/datasets/train-scene/train/"),
+                         64, 8517, 8517, "./dataset/datasets/train-scene/train.csv")
 
 
     # Evaluate the model
