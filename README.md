@@ -1,1 +1,2 @@
 # mse1h2024-cv-tasks
+Для запуска метрик в папке dataset/datasets/train-scene/train должна быть папка с изобржениями (данные тестировались на датасете https://www.kaggle.com/datasets/nitishabharathi/scene-classification/data) также  таблица с распределением картинок по классам должна находится в папке dataset/datasets/train-scene/train.csv. При возникновении ошибки связанной с разным размером изображений, необходимо запустить функцию resize() в файле Evaluator(). Для вывода метрик запустите main() в файле Evaluator().
