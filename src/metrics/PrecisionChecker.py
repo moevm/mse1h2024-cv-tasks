@@ -1,35 +1,25 @@
 from .MetricsInterface import MetricsInterface
 from sklearn.metrics import precision_score
+import torch
 
-class PrecisionChecker(MetricsInterface):
-    """
-    A class implementing precision metric checker.
-    """
-    
-    def __init__(self, name):
-        super().__init__(name)
-    
+class PrecisionChecker:
+    def __init__(self, name, average='macro'):
+        self.name = name
+        self.average = average
+
     def calculate_metric(self, predictions, ground_truth):
         """
         Calculate precision metric.
-        
-        Parameters:
-        - predictions: Predicted labels.
-        - ground_truth: Ground truth labels.
-        
+
+        Args:
+            predictions: List of predicted labels.
+            ground_truth: List of ground truth labels.
+
         Returns:
-        - The calculated precision.
+            Precision value.
         """
-        return precision_score(ground_truth, predictions)
-    
-    def interpret_result(self, precision):
-        """
-        Interpret precision result.
-        
-        Parameters:
-        - precision: The calculated precision.
-        
-        Returns:
-        - A human-readable interpretation of the precision.
-        """
-        return f"Precision: {precision * 100:.2f}%"
+        if isinstance(ground_truth, torch.Tensor):
+            ground_truth = ground_truth.cpu().numpy()
+
+        return precision_score(ground_truth, predictions, average=self.average)
+

@@ -1,0 +1,8 @@
+name: "Run metrics"
+description: "Run all metrics"
+outputs:
+  correctPullRequests:
+    description: "??"
+runs:
+  using: "docker"
+  image: "Dockerfile"
