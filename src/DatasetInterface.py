@@ -19,6 +19,13 @@ class DatasetInterface(Dataset):
     def __getitem__(self, index):
         img_path = os.path.join(self.img_dir, self.img_labels.iloc[index, 0])
         image = read_image(img_path)
+
+        # try:
+        #     image = read_image(img_path)
+        # except FileNotFoundError:
+        #     print(f"Warning: File not found: {img_path}. Skipping this image.")
+        #     return None, None
+
         label = self.img_labels.iloc[index, 1]
         if self.transform:
             image = self.transform(image)
@@ -42,9 +49,11 @@ if __name__ == '__main__':
         4: "Street",
         5: "Sea"
     }
+
     training_data, test_data = torch.utils.data.random_split(dataset, [17000, 34])
     train_loader = DataLoader(training_data, batch_size, True)
     test_loader = DataLoader(test_data, batch_size, True)
+
 
     train_features, train_label = next(iter(training_data))
     print(f"Feature batch shape: {train_features.size()}")
