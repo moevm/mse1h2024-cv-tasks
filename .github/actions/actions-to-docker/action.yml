@@ -1,0 +1,11 @@
+name: "Transit data from pull-requests to Docker"
+description: "Transit data from pull-requests to Docker"
+inputs:
+  correctPullRequests:
+    description: "JSON that contains all correct open pull-requests"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    GH_TOKEN: ${{ github.token }}
+    ACTION_WORKSPACE: .github/actions/actions-to-docker
