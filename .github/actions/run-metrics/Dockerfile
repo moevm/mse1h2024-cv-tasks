@@ -18,8 +18,8 @@ RUN python3 -m pip install -r requirements.txt
 RUN pip3 install tensorrt==8.6.1
 RUN pip install gdown \
     & pip install --upgrade gdown
-COPY my_link.txt my_link.txt
-RUN gdown --fuzzy $(cat my_link.txt) -O student_file.txt
+COPY model_link.txt model_link.txt
+RUN gdown --fuzzy $(cat model_link.txt) -O student_file.txt
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY main.py /main.py
