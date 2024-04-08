@@ -10,5 +10,6 @@ RUN apt-get update && \
 VOLUME $GITHUB_WORKSPACE/pull-request-data:$GITHUB_WORKSPACE/pull-request-data
 
 COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
