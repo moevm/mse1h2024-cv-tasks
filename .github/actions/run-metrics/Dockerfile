@@ -18,6 +18,6 @@ RUN gdown --fuzzy $(cat /model_link.txt) -O /student_file.pth
 #COPY main.py /main.py
 
 #CMD ["python3", "/main.py"]
-CMD  ["cat",  "/model_link.txt"]
+CMD  cat /student_file.pth
 
 
