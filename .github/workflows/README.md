@@ -7,7 +7,7 @@
 
 Установить act, если он не установлен __не через snap__. https://github.com/nektos/act
 
-Запустить программу  
+Запустить программу  из корня проекта
 `sudo act --secret-file .github/actions/.secrets`
 можно выбирать micro
 
