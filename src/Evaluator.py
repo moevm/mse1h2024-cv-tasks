@@ -26,7 +26,7 @@ from PIL import Image
 
 # Define a class for evaluating a model
 class ModelEvaluator:
-    def __init__(self, model, dataset, batch_size, predictions_len, ground_truth_len, filename):
+    def __init__(self, model, dataset, batch_size, filename):
         """
         Initialize the ModelEvaluator.
 
@@ -43,8 +43,6 @@ class ModelEvaluator:
         self.dataset = dataset
         self.batch_size = batch_size
         self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)
-        self.predictions_len = predictions_len
-        self.ground_truth_len = ground_truth_len
         self.df = pd.read_csv(filename)
 
     def evaluate(self):
@@ -145,27 +143,3 @@ def resize(path="./dataset/datasets/train-scene/train", size=150):
         img.save(f_img)
 
 
-if __name__ == "__main__":
-    # Instantiate ModelEvaluator
-    eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
-                                                 "./dataset/datasets/train-scene/train/"),
-                         64, 8517, 8517, "./dataset/datasets/train-scene/train.csv")
-
-    # Evaluate the model
-    metrics, fpr, tpr = eva.evaluate()
-
-    # Print evaluation metrics
-    interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
-    for index, metric in enumerate(metrics.tolist()):
-        print(f"{interpretation[index]}: {metric}")
-
-    # Plot ROC curve
-    plt.figure(figsize=(8, 6))
-    plt.plot(fpr, tpr, color='blue', lw=2, label='ROC curve')  # Use a contrasting color and thicker line
-    plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')  # Diagonal line
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic (ROC) Curve')
-    plt.legend(loc='lower right')
-    plt.grid(True)  # Add gridlines
-    plt.show()
