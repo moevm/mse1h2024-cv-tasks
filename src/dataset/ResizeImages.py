@@ -1,9 +1,15 @@
-# script for resizing images to 150x150
 import PIL
 import os
 from PIL import Image
 
-def resize(path="r'./dataset/datasets/train-scene/train'", size = 150):
+def resize(path="./dataset/datasets/train-scene/train", size=150):
+    """
+    Resize images to a specified size.
+    
+    Args:
+    path (str): Path to the directory containing images.
+    size (int): Desired size for the images (both width and height).
+    """
     f = path
     for file in os.listdir(f):
         f_img = f + "/" + file

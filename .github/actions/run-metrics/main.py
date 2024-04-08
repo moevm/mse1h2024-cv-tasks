@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 def resize(path="r'./datasets/train-scene/train'", size = 150):
 
 
-    f = r'./dataset/datasets/train-scene/train'
+    f = path
     for file in os.listdir(f):
         f_img = f + "/" + file
         img = Image.open(f_img)
