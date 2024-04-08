@@ -19,7 +19,7 @@ from metrics.PrecisionChecker import PrecisionChecker
 from torch.utils.data import DataLoader, SubsetRandomSampler
 import warnings
 warnings.filterwarnings('ignore')
-from Model import model
+from models.Model import model
 
 import os
 from PIL import Image
