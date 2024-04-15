@@ -4,6 +4,7 @@ from dataset import DatasetInterface
 from models.Model import model
 
 if __name__ == "__main__":
+
     # Instantiate ModelEvaluator
     eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
                                                  "./dataset/datasets/train-scene/train/"),

@@ -1,44 +1,35 @@
 import torch
 import numpy as np
 import pandas as pd
-import torch.nn as nn
-from random import random
-import torch.optim as optim
-from torchvision import models
-from sklearn.metrics import auc
-import matplotlib.pyplot as plt
-from dataset import DatasetInterface
 from torch.utils.data import DataLoader
-from torchvision import transforms, datasets
-
 from metrics.RecallChecker import RecallChecker
 from metrics.ROCAUCChecker import ROCAUCChecker
 from metrics.F1ScoreChecker import F1ScoreChecker
 from metrics.AccuracyChecker import AccuracyChecker
 from metrics.PrecisionChecker import PrecisionChecker
-from torch.utils.data import DataLoader, SubsetRandomSampler
+from torch.utils.data import DataLoader
 import warnings
 warnings.filterwarnings('ignore')
 from models.Model import model
-
 import os
 from PIL import Image
 
 # Define a class for evaluating a model
 class ModelEvaluator:
-    def __init__(self, model, dataset, batch_size, predictions_len, ground_truth_len, filename):
+    def __init__(self, model_file, dataset, batch_size, predictions_len, ground_truth_len, filename):
         """
         Initialize the ModelEvaluator.
 
         Args:
-            model: The model to be evaluated.
+            model_file: Path to the model file.
             dataset: The dataset to be used for evaluation.
             batch_size: Batch size for DataLoader.
             predictions_len: Length of predictions for splitting dataset.
             ground_truth_len: Length of ground truth for splitting dataset.
             filename: CSV filename.
         """
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # Define device
+        # Load the model from the specified file
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)  # Move the model to the specified device
         self.dataset = dataset
         self.batch_size = batch_size
@@ -46,6 +37,7 @@ class ModelEvaluator:
         self.predictions_len = predictions_len
         self.ground_truth_len = ground_truth_len
         self.df = pd.read_csv(filename)
+
 
     def evaluate(self):
         """
