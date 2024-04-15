@@ -9,8 +9,9 @@ from metrics.AccuracyChecker import AccuracyChecker
 from metrics.PrecisionChecker import PrecisionChecker
 from torch.utils.data import DataLoader
 import warnings
-warnings.filterwarnings('ignore')
-from models.Model import model
+
+warnings.filterwarnings('ignore')  # Ignore warnings
+from models.Model import model  # Import the model class
 import os
 from PIL import Image
 
@@ -29,14 +30,14 @@ class ModelEvaluator:
             filename: CSV filename.
         """
         # Load the model from the specified file
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # Use GPU if available, otherwise use CPU
         self.model = model.to(self.device)  # Move the model to the specified device
         self.dataset = dataset
         self.batch_size = batch_size
-        self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)
+        self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)  # Create DataLoader for the dataset
         self.predictions_len = predictions_len
         self.ground_truth_len = ground_truth_len
-        self.df = pd.read_csv(filename)
+        self.df = pd.read_csv(filename)  # Read CSV file containing ground truth labels
 
 
     def evaluate(self):
@@ -117,9 +118,6 @@ class ModelEvaluator:
         # Ensure all metrics have fixed lengths
         fixed_metrics = [precision, accuracy, recall, f1_score, roc_auc]
 
-        # Ensure all metrics have fixed lengths
-        fixed_metrics = [precision, accuracy, recall, f1_score, roc_auc]
-
         return fixed_metrics, fpr, tpr
 
 def resize(path="./dataset/datasets/train-scene/train", size=150):
@@ -133,5 +131,5 @@ def resize(path="./dataset/datasets/train-scene/train", size=150):
     for file in os.listdir(path):
         f_img = os.path.join(path, file)
         img = Image.open(f_img)
-        img = img.resize((size, size))
-        img.save(f_img)
+        img = img.resize((size, size))  # Resize the image
+        img.save(f_img)  # Save the resized image back to the same path
