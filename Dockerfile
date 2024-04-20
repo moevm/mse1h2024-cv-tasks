@@ -23,8 +23,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
 COPY ./src ./src
-COPY ./action ./src/action
-COPY ./action/info.json ./src/action/info.json
+COPY ./pull-request-data ./src/pull-request-data
+
 
 
 CMD ["python3","./src/main.py"]
