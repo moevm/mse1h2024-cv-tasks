@@ -5,25 +5,27 @@ from Model import model
 from dataset import DatasetInterface
 import json
 
+import os
+
+
 
 if __name__ == "__main__":
     # Instantiate ModelEvaluator
 
-    with open('info.json') as user_file:
-        file_contents = user_file.read()
 
+    parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 
-    parsed_json = json.loads(file_contents)
     for el in parsed_json:
         for file in el["files"]:
             if "main.py" in file["path"]:
-                path = "models/"+file["path"]
+                path = "pull-request-data/"+file["path"]
                 path = path.replace("/",".")
                 obj = __import__(path[:-3], fromlist=[None])
 
-                eva = ModelEvaluator(obj.model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
-                                                             "./dataset/datasets/train-scene/train/"),
-                                     64,  "./dataset/datasets/train-scene/train.csv")
+                eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene/train.csv",
+                                                                 "./action/datasets/train-scene/train/"),
+                                     64, "./action/datasets/train-scene/train.csv")
+
 
                 # Evaluate the model
                 metrics, fpr, tpr = eva.evaluate()

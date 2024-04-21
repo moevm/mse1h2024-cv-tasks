@@ -20,7 +20,4 @@ RUN python3 -m pip install --upgrade pip
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
-WORKDIR /src
-COPY ./src ./src
 CMD ["python3","./src/main.py"]
