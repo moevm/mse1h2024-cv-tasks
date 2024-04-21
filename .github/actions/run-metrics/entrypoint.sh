@@ -8,7 +8,7 @@ traverse() {
         if [ -d "$dir" ]; then
         # Заходим в папку src и скачиваем веса из файла weights_link.txt, если он там есть
           if [ -f "$dir/src/weights_link.txt" ]; then
-            gdown --fuzzy $(cat ${file}/src/weights_link.txt) -O ${file}/src/student_file.pth
+            gdown --fuzzy $(cat ${dir}/src/weights_link.txt) -O ${dir}/src/student_file.pth
           fi
         fi
       done
