@@ -1,18 +1,13 @@
 from matplotlib import pyplot as plt
-
 from Evaluator import ModelEvaluator
 from Model import model
 from dataset import DatasetInterface
+from models.Model import model  # Import the model from the Model module
 import json
-
 import os
 
-
-
-if __name__ == "__main__":
-    # Instantiate ModelEvaluator
-
-
+def run_checks():
+   
     parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 
     for el in parsed_json:
@@ -45,3 +40,4 @@ if __name__ == "__main__":
                 plt.legend(loc='lower right')
                 plt.grid(True)  # Add gridlines
                 plt.show()
+
