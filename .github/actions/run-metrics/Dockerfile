@@ -13,8 +13,6 @@ RUN apt-get update \
     && pip install --upgrade gdown \
     && apt-get clean && rm -rf /var/lib/apt/lists/* # Очистка кэша apt-get
 
-COPY model_link.txt /model_link.txt
-RUN gdown --fuzzy $(cat /model_link.txt) -O /student_file.pth
 ENTRYPOINT ["/entrypoint.sh"]
 
 
