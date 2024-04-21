@@ -20,10 +20,11 @@ jobs:
         id: result
         uses: ./.github/actions/run-metrics
         with:
-            correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
       - uses: actions/checkout@v4.1.1
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
           correctPullRequests: "${{ steps.result.outputs.correctPullRequests }}"
       - run: tail -f /dev/null
+
