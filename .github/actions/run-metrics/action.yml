@@ -6,6 +6,6 @@ outputs:
 runs:
   using: "docker"
   image: "Dockerfile"
-env:
+  env:
     GH_TOKEN: ${{ github.token }}
     ACTION_WORKSPACE: .github/actions/run-metrics
