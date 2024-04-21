@@ -4,7 +4,9 @@ from Evaluator import ModelEvaluator
 from Model import model
 from dataset import DatasetInterface
 import json
+
 import os
+
 
 
 if __name__ == "__main__":
@@ -20,9 +22,10 @@ if __name__ == "__main__":
                 path = path.replace("/",".")
                 obj = __import__(path[:-3], fromlist=[None])
 
-                eva = ModelEvaluator(obj.model, DatasetInterface("./src/action/datasets/train-scene/train.csv",
-                                                                 "./src/action/datasets/train-scene/train/"),
-                                     64, "./src/action/datasets/train-scene/train.csv")
+                eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene/train.csv",
+                                                                 "./action/datasets/train-scene/train/"),
+                                     64, "./action/datasets/train-scene/train.csv")
+
 
                 # Evaluate the model
                 metrics, fpr, tpr = eva.evaluate()
