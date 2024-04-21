@@ -3,7 +3,7 @@ from Evaluator import ModelEvaluator
 from dataset import DatasetInterface
 from models.Model import model  # Import the model from the Model module
 
-if __name__ == "__main__":
+def run_checks():
     # Instantiate ModelEvaluator with the model and dataset information
     eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
                                                  "./dataset/datasets/train-scene/train/"),
