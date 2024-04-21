@@ -9,4 +9,4 @@ class AccuracyChecker(MetricsInterface):
         return accuracy_score(ground_truth, predictions)
     
     def interpret_result(self, accuracy):
-        return f"Accuracy: {accuracy * 100:.2f}%"
+        return accuracy * 100

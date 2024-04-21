@@ -24,7 +24,7 @@ class DatasetInterface(Dataset):
             image = self.transform(image)
         if self.target_transform:
             label = self.target_transform(label)
-        print(img_path)
+        #print(img_path)
         return image, label
 
 batch_size = 64

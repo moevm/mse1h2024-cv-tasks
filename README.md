@@ -1,2 +1,9 @@
 # mse1h2024-cv-tasks
-Для запуска метрик в папке dataset/datasets/train-scene/train должна быть папка с изобржениями (данные тестировались на датасете https://www.kaggle.com/datasets/nitishabharathi/scene-classification/data) также  таблица с распределением картинок по классам должна находится в папке dataset/datasets/train-scene/train.csv. При возникновении ошибки связанной с разным размером изображений, необходимо запустить функцию resize() в файле Evaluator(). Для вывода метрик запустите main() в файле Evaluator().
+
+## Итерация 2
+
+[Ссылка на презентацию pdf без видео](https://github.com/moevm/mse1h2024-cv-tasks/blob/main/presentation/%D0%98%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F%202.pdf)
+
+[Ссылка на презентацию pptx с видео](https://github.com/moevm/mse1h2024-cv-tasks/blob/main/presentation/%D0%98%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F%202.pptx)
+
+[Инструкция по запуску чекера](https://github.com/moevm/mse1h2024-cv-tasks/blob/main/.github/actions/check-pull-requests/README.md)
