@@ -15,9 +15,6 @@ RUN apt-get update \
 
 COPY model_link.txt /model_link.txt
 RUN gdown --fuzzy $(cat /model_link.txt) -O /student_file.pth
-#COPY main.py /main.py
-
-#CMD ["python3", "/main.py"]
-CMD  cat /student_file.pth
+ENTRYPOINT ["/entrypoint.sh"]
 
 
