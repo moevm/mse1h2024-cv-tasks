@@ -8,7 +8,6 @@ jobs:
       - name: Check pull requests 
         id: check
         uses: ./.github/actions/check-pull-requests
-
       - run: mkdir pull-request-data
       - name: Copy pull-requests files 
         uses: ./.github/actions/actions-to-docker
@@ -26,5 +25,6 @@ jobs:
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
-          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+          correctPullRequests: "${{ steps.result.outputs.correctPullRequests }}"
       - run: tail -f /dev/null
+

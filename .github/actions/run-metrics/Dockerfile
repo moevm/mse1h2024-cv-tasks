@@ -1,12 +1,14 @@
 FROM nvidia/cuda:11.0.3-base-ubuntu20.04
+
 # Install python packages
 #COPY requirements.txt /requirements.txt
 
+
 # Необходимые пакеты
-RUN apt-get update \
-    && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     python3.8 \
     python3-pip \
+
     && python3 -m pip install --upgrade pip \
 #    && python3 -m pip install -r /requirements.txt \
     && pip install gdown \
@@ -21,3 +23,8 @@ RUN gdown --fuzzy $(cat /model_link.txt) -O /student_file.pth
 CMD  cat /student_file.pth
 
 
+# Очистка кэша apt-get
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY main.py /main.py
+
+CMD ["python3", "/main.py"]
