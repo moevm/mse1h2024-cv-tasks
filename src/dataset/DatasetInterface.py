@@ -43,7 +43,6 @@ class DatasetInterface(Dataset):
         return image, label
 
 batch_size = 64
-
 # example
 if __name__ == '__main__':
     # Create dataset instance

@@ -1,28 +1,50 @@
 from models.Model import model
-
 import os
 from PIL import Image
+import json
+import subprocess
+#from src.Evaluator import ModelEvaluator
+#from src.dataset import DatasetInterface
 
-from src.Evaluator import ModelEvaluator
-from src.dataset import DatasetInterface
-import matplotlib.pyplot as plt
 
-def resize(path="r'./datasets/train-scene/train'", size = 150):
-
+'''def resize(path="r'./datasets/train-scene/train'", size = 150):
 
     f = path
     for file in os.listdir(f):
         f_img = f + "/" + file
         img = Image.open(f_img)
         img = img.resize((150, 150))
-        img.save(f_img)
+        img.save(f_img)'''
+class RunMetrics():
 
+    def __init__(self):
+        self.data = json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
+        print(self.data)
+    
+    def write_message(self, index, message):
+        #print(index, message)   
+        self.data[index]["comment"] += message
+        print(self.data[index]["comment"])
+        pass
+    def write_result(self, result):
+        with open(os.path.abspath(os.environ["GITHUB_OUTPUT"]), "a") as output_file:
+            output_file.write(f"correctPullRequests={result}")
+    def main(self):
+        for i in range(len(self.data)):
+            if not self.data[i]["correct"]:
+                continue
+            msg = "Тестовое сообщение результата работы метрик для "+str(i)+ " pr"
+            self.write_message(i, msg)
+        print(self.data)
+        self.write_result(json.dumps(self.data))
 # Example usage
 if __name__ == "__main__":
-    eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
+    run_merics = RunMetrics()
+    run_merics.main()
+    '''eva = ModelEvaluator(model, DatasetInterface("./dataset/datasets/train-scene/train.csv",
                                                  "./dataset/datasets/train-scene/train/"),
                          64, 8517, 8517, "./dataset/datasets/train-scene/train.csv")
-    
+   
     # Evaluate the model
     metrics, fpr, tpr = eva.evaluate()
 

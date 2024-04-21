@@ -8,7 +8,6 @@ jobs:
       - name: Check pull requests 
         id: check
         uses: ./.github/actions/check-pull-requests
-
       - run: mkdir pull-request-data
       - name: Copy pull-requests files 
         uses: ./.github/actions/actions-to-docker
@@ -17,10 +16,15 @@ jobs:
         env:
           PUBLIC_SSH_KEY: "${{ secrets.PUBLIC_SSH_KEY }}"
           PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_SSH_KEY }}"
+      - name: Run Metrics
+        id: result
+        uses: ./.github/actions/run-metrics
+        with:
+          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
       - uses: actions/checkout@v4.1.1
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
-          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+          correctPullRequests: "${{ steps.result.outputs.correctPullRequests }}"
       - run: tail -f /dev/null
 

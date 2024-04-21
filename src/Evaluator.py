@@ -17,7 +17,7 @@ from PIL import Image
 
 # Define a class for evaluating a model
 class ModelEvaluator:
-    def __init__(self, model_file, dataset, batch_size, predictions_len, ground_truth_len, filename):
+    def __init__(self, model, dataset, batch_size, filename):
         """
         Initialize the ModelEvaluator.
 
@@ -34,11 +34,8 @@ class ModelEvaluator:
         self.model = model.to(self.device)  # Move the model to the specified device
         self.dataset = dataset
         self.batch_size = batch_size
-        self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)  # Create DataLoader for the dataset
-        self.predictions_len = predictions_len
-        self.ground_truth_len = ground_truth_len
-        self.df = pd.read_csv(filename)  # Read CSV file containing ground truth labels
-
+        self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)
+        self.df = pd.read_csv(filename)
 
     def evaluate(self):
         """
@@ -133,3 +130,4 @@ def resize(path="./dataset/datasets/train-scene/train", size=150):
         img = Image.open(f_img)
         img = img.resize((size, size))  # Resize the image
         img.save(f_img)  # Save the resized image back to the same path
+
