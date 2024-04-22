@@ -36,10 +36,10 @@ def run_checks():
     parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 
     for index,el in enumerate(parsed_json):
-       if not el["correct"]:
+        if not el["correct"]:
             continue
             
-    for file in el["files"]:
+        for file in el["files"]:
             if "model.py" not in file["path"]:
                 continue
             path = "pull-request-data/"+file["path"]
