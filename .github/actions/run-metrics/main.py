@@ -33,6 +33,18 @@ class RunMetrics():
         for i in range(len(self.data)):
             if not self.data[i]["correct"]:
                 continue
+            if el["lab_tag"] == "lab1":
+                print("checking and processing lab1")
+            
+            elif el["lab_tag"] == "lab2":
+                print("checking and processing lab2")
+
+            elif el["lab_tag"] == "lab3":
+                print("checking and processing lab3")
+
+            else:
+                print("no such lab_tag")
+                continue
             msg = "Тестовое сообщение результата работы метрик для "+str(i)+ " pr"
             self.write_message(i, msg)
         print(self.data)
