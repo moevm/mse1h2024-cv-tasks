@@ -1,18 +1,44 @@
 from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator
-from Model import model
 from dataset import DatasetInterface
 from models.Model import model  # Import the model from the Model module
 import json
 import os
 
+
+class RunMetrics():
+
+    def __init__(self):
+        self.data = json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
+        print(self.data)
+
+    def write_message(self, index, message):
+        # print(index, message)
+        self.data[index]["comment"] += message
+        #print(self.data[index]["comment"])
+        #pass
+
+    def write_result(self, result):
+        with open(os.path.abspath(os.environ["GITHUB_OUTPUT"]), "a") as output_file:
+            output_file.write(f"correctPullRequests={result}")
+
+    def main(self):
+        for i in range(len(self.data)):
+            if not self.data[i]["correct"]:
+                continue
+            msg = "Тестовое сообщение результата работы метрик для " + str(i) + " pr"
+            self.write_message(i, msg)
+        print(self.data)
+        self.write_result(json.dumps(self.data))
+
 def run_checks():
-   
+    run_metrics = RunMetrics()
+
     parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 
-    for el in parsed_json:
-        for file in el["files"]:
-            if "main.py" in file["path"]:
+    for index,el in enumerate(parsed_json):
+        for  file in el["files"]:
+            if "model.py" in file["path"]:
                 path = "pull-request-data/"+file["path"]
                 path = path.replace("/",".")
                 obj = __import__(path[:-3], fromlist=[None])
@@ -28,7 +54,8 @@ def run_checks():
                 # Print evaluation metrics
                 interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
                 for index, metric in enumerate(metrics.tolist()):
-                    print(f"{interpretation[index]}: {metric}")
+                    #print(f"{interpretation[index]}: {metric}")
+                    run_metrics.write_message(index, f"{interpretation[index]}: {metric}\n")
 
                 # Plot ROC curve
                 plt.figure(figsize=(8, 6))
@@ -41,3 +68,7 @@ def run_checks():
                 plt.grid(True)  # Add gridlines
                 plt.show()
 
+    run_metrics.write_result(json.dumps(parsed_json))
+
+if __name__ == "__main__":
+    run_checks()
