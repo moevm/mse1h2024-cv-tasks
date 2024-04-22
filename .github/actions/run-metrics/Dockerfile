@@ -15,9 +15,12 @@ RUN apt-get update && apt-get install -y \
     && pip install --upgrade gdown \
     && apt-get clean && rm -rf /var/lib/apt/lists/* # Очистка кэша apt-get
 
+RUN pip install gdown
+RUN pip install --upgrade gdown
+
 ENTRYPOINT ["/entrypoint.sh"]
 
-
+COPY links /links
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY main.py /main.py
