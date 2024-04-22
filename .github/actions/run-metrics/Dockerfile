@@ -17,13 +17,15 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/* # Очистка кэша apt-get
 
 
-RUN pip install gdown
-RUN pip install --upgrade gdown
 
 
 
 
 COPY links /links
+
+RUN gdown --fuzzy https://drive.google.com/file/d/15zcMiOwd_aOwdZovyO68gb-dzIjopR6j/view?usp=drive_link
+RUN gdown --fuzzy https://drive.google.com/file/d/1pBT8FONYrc7RRtL0Xz_cCAm-RwgGEkC8/view?usp=drive_link
+
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
