@@ -26,4 +26,3 @@ jobs:
         uses: ./.github/actions/comment_writer
         with:
           correctPullRequests: "${{ steps.result.outputs.correctPullRequests }}"
-      - run: tail -f /dev/null
