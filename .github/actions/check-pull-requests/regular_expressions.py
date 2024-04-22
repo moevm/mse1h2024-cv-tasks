@@ -20,8 +20,8 @@ FILES = [
         },
         {
             "path": r"src",
-            "file_name": r".*\.py",
-            "context": "PY"
+            "file_name": r"model.py",
+            "context": "модель"
         }
     ]
     for _ in range(5)    
