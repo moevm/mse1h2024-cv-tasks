@@ -22,6 +22,11 @@ FILES = [
             "path": r"src",
             "file_name": r"model.py",
             "context": "модель"
+        },
+        {
+            "path": r"src",
+            "file_name": r"weights_link.txt",
+            "context": "ссылки на веса"
         }
     ]
     for _ in range(5)    
