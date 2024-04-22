@@ -22,6 +22,11 @@ FILES = [
             "path": r"src",
             "file_name": r".*\.py",
             "context": "PY"
+        },
+        {
+            "path": r"src",
+            "file_name": r"weights_link.txt",
+            "context": "Ссылка на веса"
         }
     ]
     for _ in range(5)    
