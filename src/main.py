@@ -1,3 +1,4 @@
+
 from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator
 from dataset import DatasetInterface
@@ -37,36 +38,40 @@ def run_checks():
     parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
 
     for index,el in enumerate(parsed_json):
-        for  file in el["files"]:
-            if "model.py" in file["path"]:
-                path = "pull-request-data/"+file["path"]
-                path = path.replace("/",".")
-                obj = __import__(path[:-3], fromlist=[None])
+       if not el["correct"]:
+            continue
+            
+        for file in el["files"]:
+            if "model.py" not in file["path"]:
+                continue
+            path = "pull-request-data/"+file["path"]
+            path = path.replace("/",".")
+            obj = __import__(path[:-3], fromlist=[None])
 
-                eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene/train.csv",
-                                                                 "./action/datasets/train-scene/train/"),
-                                     64, "./action/datasets/train-scene/train.csv")
+            eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene/train.csv",
+                                                              "./action/datasets/train-scene/train/"),
+                                  64, "./action/datasets/train-scene/train.csv")
 
 
-                # Evaluate the model
-                metrics, fpr, tpr = eva.evaluate()
+            # Evaluate the model
+            metrics, fpr, tpr = eva.evaluate()
 
-                # Print evaluation metrics
-                interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
-                for index, metric in enumerate(metrics.tolist()):
-                    #print(f"{interpretation[index]}: {metric}")
-                    run_metrics.write_message(index, f"{interpretation[index]}: {metric}\n")
+            # Print evaluation metrics
+            interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
+            for index, metric in enumerate(metrics.tolist()):
+                #print(f"{interpretation[index]}: {metric}")
+                run_metrics.write_message(index, f"{interpretation[index]}: {metric}\n")
 
-                # Plot ROC curve
-                plt.figure(figsize=(8, 6))
-                plt.plot(fpr, tpr, color='blue', lw=2, label='ROC curve')  # Use a contrasting color and thicker line
-                plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')  # Diagonal line
-                plt.xlabel('False Positive Rate')
-                plt.ylabel('True Positive Rate')
-                plt.title('Receiver Operating Characteristic (ROC) Curve')
-                plt.legend(loc='lower right')
-                plt.grid(True)  # Add gridlines
-                plt.show()
+            # Plot ROC curve
+            plt.figure(figsize=(8, 6))
+            plt.plot(fpr, tpr, color='blue', lw=2, label='ROC curve')  # Use a contrasting color and thicker line
+            plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')  # Diagonal line
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.title('Receiver Operating Characteristic (ROC) Curve')
+            plt.legend(loc='lower right')
+            plt.grid(True)  # Add gridlines
+            plt.show()
 
     run_metrics.write_result(json.dumps(parsed_json))
 

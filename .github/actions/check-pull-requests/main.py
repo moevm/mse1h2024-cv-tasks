@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from reqular_expressions import *
+from regular_expressions import *
 
 class PullRequestChecker():
 
@@ -9,6 +9,7 @@ class PullRequestChecker():
         self._title = pull_request["title"]
         self._files = pull_request["files"]
         self._number = pull_request["number"]
+        self._lab_tag = ""
         self._comment = ""
         self._checks = {
             "title": True,
@@ -30,6 +31,7 @@ class PullRequestChecker():
 
     def _check_files(self):
         group_number, last_name, first_name, lab_number = self._title.split("_")
+        self._lab_tag = lab_number
         lab_number = lab_number[3:]
 
         general_path = self._replace_dummies(GENERAL_PATH, group_number, last_name, first_name, lab_number) 
@@ -95,6 +97,7 @@ class PullRequestChecker():
             "title": self._title,
             "number": self._number,
             "files": self._files,
+            "lab_tag": self._lab_tag,
             "comment": self._comment,
             "correct": all(self._checks[item] for item in self._checks)
         }
