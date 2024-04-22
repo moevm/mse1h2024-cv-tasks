@@ -1,11 +1,9 @@
-
 from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator
 from dataset import DatasetInterface
-from models.Model import model  # Import the model from the Model module
 import json
 import os
-
+import torch
 
 class RunMetrics():
 
@@ -41,12 +39,21 @@ def run_checks():
        if not el["correct"]:
             continue
             
-        for file in el["files"]:
+    for file in el["files"]:
             if "model.py" not in file["path"]:
                 continue
             path = "pull-request-data/"+file["path"]
             path = path.replace("/",".")
             obj = __import__(path[:-3], fromlist=[None])
+            
+            weights_file = path[:-8] + "weights.pth"
+            
+            if torch.cuda.is_available():
+                state_dict = torch.load(weights_file)  # Load the model's state dictionary
+            else:
+                state_dict = torch.load(weights_file, map_location=torch.device('cpu'))
+
+            obj.model.load_state_dict(state_dict)
 
             eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene/train.csv",
                                                               "./action/datasets/train-scene/train/"),
