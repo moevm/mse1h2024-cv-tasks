@@ -1,37 +1,57 @@
-from matplotlib import pyplot as plt
 
+from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator
-from Model import model
 from dataset import DatasetInterface
+from models.Model import model  # Import the model from the Model module
 import json
 import os
 
-def write_result(result):
-    with open(os.path.abspath(os.environ["GITHUB_OUTPUT"]), "a") as output_file:
-        output_file.write(f"correctPullRequests={result}")
 
-if __name__ == "__main__":
-    # Instantiate ModelEvaluator
+class RunMetrics():
 
+    def __init__(self):
+        self.data = json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
+        print(self.data)
+
+    def write_message(self, index, message):
+        # print(index, message)
+        self.data[index]["comment"] += message
+        #print(self.data[index]["comment"])
+        #pass
+
+    def write_result(self, result):
+        with open(os.path.abspath(os.environ["GITHUB_OUTPUT"]), "a") as output_file:
+            output_file.write(f"correctPullRequests={result}")
+
+    def main(self):
+        for i in range(len(self.data)):
+            if not self.data[i]["correct"]:
+                continue
+            msg = "Тестовое сообщение результата работы метрик для " + str(i) + " pr"
+            self.write_message(i, msg)
+        print(self.data)
+        self.write_result(json.dumps(self.data))
+
+def run_checks():
+    run_metrics = RunMetrics()
 
     parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
-    print(parsed_json)
 
-    for el in parsed_json:
-        if not el["correct"]:
+    for index,el in enumerate(parsed_json):
+       if not el["correct"]:
             continue
-
+            
         for file in el["files"]:
             if "model.py" not in file["path"]:
                 continue
-
             path = "pull-request-data/"+file["path"]
             path = path.replace("/",".")
             obj = __import__(path[:-3], fromlist=[None])
 
             eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene/train.csv",
-                                                             "./action/datasets/train-scene/train/"),
-                                 64, "./action/datasets/train-scene/train.csv")
+                                                              "./action/datasets/train-scene/train/"),
+                                  64, "./action/datasets/train-scene/train.csv")
+
 
             # Evaluate the model
             metrics, fpr, tpr = eva.evaluate()
@@ -39,8 +59,8 @@ if __name__ == "__main__":
             # Print evaluation metrics
             interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
             for index, metric in enumerate(metrics.tolist()):
-                el["comment"] += f"{interpretation[index]}: {metric}\n"
-                print(f"{interpretation[index]}: {metric}")
+                #print(f"{interpretation[index]}: {metric}")
+                run_metrics.write_message(index, f"{interpretation[index]}: {metric}\n")
 
             # Plot ROC curve
             plt.figure(figsize=(8, 6))
@@ -53,4 +73,7 @@ if __name__ == "__main__":
             plt.grid(True)  # Add gridlines
             plt.show()
 
-    write_result(json.dumps(parsed_json))
+    run_metrics.write_result(json.dumps(parsed_json))
+
+if __name__ == "__main__":
+    run_checks()

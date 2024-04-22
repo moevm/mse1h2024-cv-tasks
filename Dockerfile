@@ -20,4 +20,13 @@ RUN python3 -m pip install --upgrade pip
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-CMD ["python3","./src/main.py"]
+
+# WORKDIR /src
+# COPY ./src ./src
+# COPY ./pull-request-data ./src/pull-request-data
+#
+# CMD ["python3","./src/main.py"]
+
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
