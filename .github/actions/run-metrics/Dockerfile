@@ -3,6 +3,7 @@ FROM nvidia/cuda:11.0.3-base-ubuntu20.04
 # Install python packages
 COPY requirements.txt /requirements.txt
 
+COPY entrypoint.sh /entrypoint.sh
 
 # Необходимые пакеты
 RUN apt-get update && apt-get install -y \
@@ -15,14 +16,16 @@ RUN apt-get update && apt-get install -y \
     && pip install --upgrade gdown \
     && apt-get clean && rm -rf /var/lib/apt/lists/* # Очистка кэша apt-get
 
+
 RUN pip install gdown
 RUN pip install --upgrade gdown
 
-ENTRYPOINT ["/entrypoint.sh"]
+
+
 
 COPY links /links
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-COPY main.py /main.py
 
-CMD ["python3", "/main.py"]
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]

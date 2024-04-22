@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from reqular_expressions import *
+from regular_expressions import *
 
 class PullRequestChecker():
 
