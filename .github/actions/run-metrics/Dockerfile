@@ -16,11 +16,18 @@ RUN apt-get update && apt-get install -y \
     && pip install --upgrade gdown \
     && apt-get clean && rm -rf /var/lib/apt/lists/* # Очистка кэша apt-get
 
-ENTRYPOINT ["sh", "/entrypoint.sh"]
 
+
+
+
+
+COPY links /links
+
+RUN gdown --fuzzy https://drive.google.com/file/d/15zcMiOwd_aOwdZovyO68gb-dzIjopR6j/view?usp=drive_link
+RUN gdown --fuzzy https://drive.google.com/file/d/1pBT8FONYrc7RRtL0Xz_cCAm-RwgGEkC8/view?usp=drive_link
 
 # Очистка кэша apt-get
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-COPY main.py /main.py
 
-CMD ["python3", "/main.py"]
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]
