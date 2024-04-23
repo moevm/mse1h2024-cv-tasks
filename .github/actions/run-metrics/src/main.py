@@ -36,7 +36,7 @@ def run_checks():
     parsed_json =  json.loads(os.environ['INPUT_CORRECTPULLREQUESTS'])
     resize()
 
-    for index,el in enumerate(parsed_json):
+    for ind,el in enumerate(parsed_json):
         if not el["correct"]:
             continue
             
@@ -69,7 +69,8 @@ def run_checks():
             interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
             for index, metric in enumerate(metrics.tolist()):
                 #print(f"{interpretation[index]}: {metric}")
-                run_metrics.write_message(index, f"{interpretation[index]}: {metric}\n")
+                #el["comment"] += f"{interpretation[index]}: {metric}\n"
+                run_metrics.write_message(ind, f"{interpretation[index]}: {metric}\n")
 
             # Plot ROC curve
             plt.figure(figsize=(8, 6))
