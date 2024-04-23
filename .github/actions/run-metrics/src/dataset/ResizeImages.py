@@ -2,7 +2,7 @@ import PIL
 import os
 from PIL import Image
 
-def resize(path="./dataset/datasets/train-scene/train", size=150):
+def resize(path="./dataset/datasets/train-scene classification/train", size=150):
     """
     Resize images to a specified size.
     

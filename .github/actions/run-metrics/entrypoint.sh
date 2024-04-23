@@ -12,4 +12,14 @@ traverse() {
 
 # Вызываем функцию для обхода и поиска файла
 traverse $GITHUB_WORKSPACE/pull-request-data
-python main.py
+
+mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action
+mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets
+unzip /lab1_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets > trash_tmp
+
+cd $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src
+
+cp -r $GITHUB_WORKSPACE/pull-request-data . 
+
+python3 main.py
+# tail -f /dev/null

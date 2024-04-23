@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 import warnings
 
 warnings.filterwarnings('ignore')  # Ignore warnings
-from models.Model import model  # Import the model class
+# from models.Model import model  # Import the model class
 import os
 from PIL import Image
 
@@ -117,7 +117,7 @@ class ModelEvaluator:
 
         return fixed_metrics, fpr, tpr
 
-def resize(path="./dataset/datasets/train-scene/train", size=150):
+def resize(path="./action/datasets/train-scene classification/train", size=150):
     """
     Resize images in a directory.
 
