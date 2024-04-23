@@ -2,19 +2,24 @@
 
 # Функция для обхода папок
 traverse() {
-    for file in "$1"/*; do
-      for dir in ${file}/*; do
-      # Проверяем, является ли текущая папка директорией
-        if [ -d "$dir" ]; then
+    for dir in `find "$1"  -type d -name src`; do
         # Заходим в папку src и скачиваем веса из файла weights_link.txt, если он там есть
-          if [ -f "$dir/src/weights_link.txt" ]; then
-            gdown --fuzzy $(cat ${dir}/src/weights_link.txt) -O ${dir}/src/student_file.pth
+          if [ -f "$dir/weights_link.txt" ]; then
+            gdown --fuzzy $(cat ${dir}/weights_link.txt) -O ${dir}/weights.pth
           fi
-        fi
-      done
     done
 }
 
 # Вызываем функцию для обхода и поиска файла
-traverse $GITHUB_WORKSPACE/pull-requests-data
-python main.py
+traverse $GITHUB_WORKSPACE/pull-request-data
+
+mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action
+mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets
+unzip /lab1_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets > trash_tmp
+
+cd $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src
+
+cp -r $GITHUB_WORKSPACE/pull-request-data . 
+
+python3 main.py
+# tail -f /dev/null
