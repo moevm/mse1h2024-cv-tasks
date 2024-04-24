@@ -13,3 +13,6 @@
 
 [Инструкция по запуску чекера](https://github.com/moevm/mse1h2024-cv-tasks/blob/main/.github/actions/check-pull-requests/README.md)
 
+> код находится в папке ./github
+> документация находится в documentation.md
+
