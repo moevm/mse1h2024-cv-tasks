@@ -1,6 +1,31 @@
 # Зависимости
 Для корректрой работы приложения необходимо установить и настроить следующие утилиты. Также убедитесь, что на устройстве достаточно памяти (минимум 12-15 гб).
+## Docker
+[официальная документация](https://docs.docker.com/engine/install/ubuntu/)  
+Настройте apt-репозиторий Docker
+```sh
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+Установите пакеты Docker
+```sh
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+Убедитесь, что установка Docker Engine прошла успешно, запустив образ hello-world
+```sh
+sudo docker run hello-world
+```
 ## GitHub CLI
 GitHub CLI требуется для получения токена авторизации и дальнейшей его передачи в запускаемые GitHub Actions. Токен автороизации используется в реализованных GitHub Actions для получения информации о открытых пулл-реквестах и получения их содержимого.
 
