@@ -14,7 +14,7 @@
 
 ## Итерация 3
 
-[Ссылка на презентацию по итогам Итерации 3]()
+[Ссылка на презентацию по итогам Итерации 3](https://github.com/moevm/mse1h2024-cv-tasks/blob/main/presentation/%D0%98%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D1%8F%203.pdf)
 
 
 [Инструкция для запуска](https://github.com/moevm/mse1h2024-cv-tasks/blob/main/documentation.md)
