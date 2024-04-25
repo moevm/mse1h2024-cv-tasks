@@ -1,6 +1,31 @@
 # Зависимости
-Для корректрой работы приложения необходимо установить и настроить следующие утилиты.
+Для корректрой работы приложения необходимо установить и настроить следующие утилиты. Также убедитесь, что на устройстве достаточно памяти (минимум 12-15 гб).
+## Docker
+[официальная документация](https://docs.docker.com/engine/install/ubuntu/)  
+Настройте apt-репозиторий Docker
+```sh
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+Установите пакеты Docker
+```sh
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+Убедитесь, что установка Docker Engine прошла успешно, запустив образ hello-world
+```sh
+sudo docker run hello-world
+```
 ## GitHub CLI
 GitHub CLI требуется для получения токена авторизации и дальнейшей его передачи в запускаемые GitHub Actions. Токен автороизации используется в реализованных GitHub Actions для получения информации о открытых пулл-реквестах и получения их содержимого.
 
@@ -37,8 +62,16 @@ https://github.com/cli/cli/releases/tag/v2.45.0
 ```sh
 gh auth login
 ```
+Пример авторизации:  
+> ? What account do you want to log into? GitHub.com  
+> ? What is your preferred protocol for Git operations on this host? HTTPS  
+> ? How would you like to authenticate GitHub CLI? Login with a web browser  
+>   
+> ! First copy your one-time code: CE09-717A  
+> Press Enter to open github.com in your browser...  
 
 Удостоверьтесь в корректном прохождении аутентификации:
+
 ```sh
 gh auth token
 ```
@@ -55,17 +88,18 @@ gh auth token
 > В процессе разработки принято решение использовать rsa SSH-ключи, так как данные ключи поддерживаются даже на устаревших системах. Так как приложение работает с использованием GitHub Actions, оно не имеет возможности напрямую получить доступ ко всем SSH ключам, используемым в системе, так как по изначальной задумке GitHub Actions должны запускаться не локально, а на удаленной виртуальной системе. Поэтому указание SSH ключей происходит напрямую при запуске рабочего процесса GitHub Actions, и это должны быть именно rsa ключи.
 
 ### Генерация ключей
-Для генерации rsa ключей используйте следующую команду:  
+Для генерации rsa ключей используйте следующую команду, также запомните ключ-пароль (passphrase):  
 ```sh
+cd ~/.ssh
 ssh-keygen -t rsa
 ```
-
-Для проверки сгенерирванных ключей проверьте содержимое файлов `~/.ssh/id_rsa.pub` (публичный ключ) и `~/.ssh/id_rsa` (приватный ключ).
+Далее укажите файл в котором будут сохранены ключи (рекомендуемое имя файла - id_rsa).
+Для проверки сгенерирванных ключей проверьте содержимое файлов `~/.ssh/id_rsa.pub` (публичный ключ) и `~/.ssh/id_rsa` (приватный ключ), например с помощью команды cat.
 
 ### Добавление ключей в GitHub аккаунт
 Перейдите по [ссылке](https://github.com/settings/keys). В правом верхнем углу выберите `New SSH key`. В поле `Key` укажите содержимое файла `~/.ssh/id_rsa.pub`.
 
-Для проверки наличия SSH-соединения воспользуйтесь следующей командой:
+Для проверки наличия SSH-соединения воспользуйтесь следующей командой, при необходимости введите ключ-пароль(passphrase):
 ```sh
 ssh -T git@github.com
 ```
@@ -88,15 +122,28 @@ Hi <Ваше имя пользователя>! You've successfully authenticated
 ```sh
 sudo pamac install act
 ```
-
-Для установки Act в Ubuntu Linux склонируйте [оффициальный репозиторий Act](https://github.com/nektos/act) и воспользуйтесь следующей командой:
-```sh
-make install
-```
-
 > #### Примечание
-> Для сборки Act необходимо установить [go](https://go.dev/doc/install).
+> Для сборки Act необходимо установить [go](https://go.dev/doc/install).   
+> скачайте папку с официального сайта, разархивируйте, зайдите в папку (пример названия папки: go1.22.2.linux-amd64), выполните команды (в данной папке):
+> ```sh
+> sudo mv go /usr/local
+> export PATH=$PATH:/usr/local/go/bin
+> go version
+> ```
+> Также необходимо установить утилиту make:
+> ```sh 
+> sudo apt install make
+> ```
 
+Для установки Act в Ubuntu Linux воспользуйтесь следующими командами, [оффициальный репозиторий Act](https://github.com/nektos/act):
+```sh
+wget -qO act.tar.gz https://github.com/nektos/act/releases/latest/download/act_Linux_x86_64.tar.gz
+sudo tar xf act.tar.gz -C /usr/local/bin act
+```
+Для удаления tar.gz файла:
+```sh
+rm -rf act.tar.gz
+```
 Для проверки корректности установки Act воспользуйтесь следующей командой:
 ```sh
 act --version
@@ -137,3 +184,4 @@ act --secret-file .github/actions/.secrets
 Для создания нового репозитория, содержащего GitHub Actions из этого приложения, нажмите на кнопку `Use this template` в правом верхнем углу страницы исходного кода приложения и пройдите стандартную процедуру создания репозитория в GitHub.
 
 # Удачи
+cообщения внутри пуллреквестов
