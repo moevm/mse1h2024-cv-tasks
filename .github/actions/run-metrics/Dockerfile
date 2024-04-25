@@ -8,11 +8,8 @@ RUN apt-get update && apt-get install -y \
     python3.8 \
     python3-pip \
     unzip \
-
     && python3 -m pip install --upgrade pip \
     && python3 -m pip install -r /requirements.txt \
-    && pip install gdown \
-    && pip install --upgrade gdown \
     && apt-get clean && rm -rf /var/lib/apt/lists/* # Очистка кэша apt-get
 
 RUN gdown --fuzzy https://drive.google.com/file/d/15zcMiOwd_aOwdZovyO68gb-dzIjopR6j/view?usp=drive_link -O $GITHUB_WORKSPACE/lab1_dataset.zip
