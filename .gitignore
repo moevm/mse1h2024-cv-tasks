@@ -27,3 +27,4 @@ share/python-wheels/
 *.egg
 .vscode
 src/dataset/dataset/
+.github/actions/.secrets
