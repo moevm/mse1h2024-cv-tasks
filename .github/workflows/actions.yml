@@ -19,16 +19,17 @@ jobs:
       - uses: actions/checkout@v4.1.1
       - name: Run Lab
         id: result
-        if: 
-        uses: ./.github/actions/run-lab2
-        with:
-          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
-      #- uses: actions/checkout@v4.1.1
-      #- name: Run Lab2
-        #id: result
-        #uses: ./.github/actions/run-lab2
-        #with:
-          #correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+        run: |
+          labTagValue=$(echo "${{ steps.check.outputs.correctPullRequests }}" | jq -r '.[0]["lab-tag"]')
+          if [ "$labTagValue" = "lab1" ]; then
+            uses: ./.github/actions/run-lab1
+            with:
+              correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+          elif [ "$labTagValue" = "lab2" ]; then
+            uses: ./.github/actions/run-lab2
+            with:
+              correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+          fi
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
