@@ -17,11 +17,18 @@ jobs:
           PUBLIC_SSH_KEY: "${{ secrets.PUBLIC_SSH_KEY }}"
           PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_SSH_KEY }}"
       - uses: actions/checkout@v4.1.1
-      - name: Run Metrics
+      - name: Run Lab
         id: result
-        uses: ./.github/actions/run-metrics
+        if: 
+        uses: ./.github/actions/run-lab2
         with:
           correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+      #- uses: actions/checkout@v4.1.1
+      #- name: Run Lab2
+        #id: result
+        #uses: ./.github/actions/run-lab2
+        #with:
+          #correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
