@@ -104,13 +104,13 @@ class PullRequestChecker():
 
 def write_result(result):
     with open(os.path.abspath(os.environ["GITHUB_OUTPUT"]), "a") as output_file:
-        output_file.write(f"correctPullRequests={result}")
+        output_file.write(f"correctPullRequests={result}\n")
 
 def write_lab_tag(pull_requests):
     all_lab_tags = []
     for pr in pull_requests:
-        all_lab_tags.append(pr["lab-tag"])
-    lab_tag = max(set(all_lab_tags), key=lst.count)
+        all_lab_tags.append(pr["lab_tag"])
+    lab_tag = max(set(all_lab_tags), key=all_lab_tags.count)
     print(lab_tag)
     with open(os.path.abspath(os.environ["GITHUB_OUTPUT"]), "a") as output_file:
         output_file.write(f"lab-tag={lab_tag}")
@@ -125,8 +125,8 @@ def main():
 
     for pull_request in opened_pull_requests:
         processed_pull_requests.append(PullRequestChecker(pull_request).get_json())
-    write_lab_tag(processed_pull_requests)
+    
     write_result(json.dumps(processed_pull_requests))
-
+    write_lab_tag(processed_pull_requests)
 if __name__ == "__main__":
     main()

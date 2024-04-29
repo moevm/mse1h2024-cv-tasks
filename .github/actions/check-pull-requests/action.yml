@@ -1,6 +1,8 @@
 name: "Check pull-requests"
 description: "Check content of all open pull-requests"
 outputs:
+  lab-tag:
+    description: "name of work for branching in workfkow"
   correctPullRequests:
     description: "JSON that contais information of all correct open pull-requests, including their title, number and changed files"
 runs:
