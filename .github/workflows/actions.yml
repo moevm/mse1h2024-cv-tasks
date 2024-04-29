@@ -20,15 +20,18 @@ jobs:
       - name: Run Lab
         id: result
         run: |
-          labTagValue=$(echo "${{ steps.check.outputs.correctPullRequests }}" | jq -r '.[0]["lab-tag"]')
-          if [ "$labTagValue" = "lab1" ]; then
+          labTagValue=$(echo "${{ steps.check.outputs.lab-tag }}")
+          echo "$labTagValue"
+          if [ "$labTagValue" == "lab1" ]; then
             uses: ./.github/actions/run-lab1
             with:
               correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
-          elif [ "$labTagValue" = "lab2" ]; then
+          elif [ "$labTagValue" == "lab2" ]; then
             uses: ./.github/actions/run-lab2
             with:
               correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+          else 
+            echo no such work
           fi
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
