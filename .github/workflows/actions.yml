@@ -16,15 +16,18 @@ jobs:
         env:
           PUBLIC_SSH_KEY: "${{ secrets.PUBLIC_SSH_KEY }}"
           PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_SSH_KEY }}"
+      #- name: Comment pull-requests
+        #uses: ./.github/actions/comment_writer
+        #with:
+          #correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}" 
       - uses: actions/checkout@v4.1.1
-      - name: Run Lab
-        id: result
-        uses: |
-          ./.github/actions/run-lab1
-          ./.github/actions/run-lab2
+      - name: Run Lab1
+        id: lab1
+        uses: ./.github/actions/run-lab1
         with: 
           correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
-      - name: Comment pull-requests
-        uses: ./.github/actions/comment_writer
-        with:
-          correctPullRequests: "${{ steps.result.outputs.correctPullRequests }}"
+      - name: Run Lab2
+        id: lab2
+        uses: ./.github/actions/run-lab2
+        with: 
+          correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
