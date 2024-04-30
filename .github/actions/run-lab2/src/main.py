@@ -88,13 +88,6 @@ def run_checks():
             plt.show()
 
     run_metrics.write_result(json.dumps(parsed_json))
-    write_comments(parsed_json)
-
-def write_comments(data):
-    for i in range(len(data)):
-        if (data[i]["correct"]) and data[i]["lab_tag"] == "lab2":
-            command = "gh pr comment " + str(data[i]["number"]) + " --body " + "\"" + str(data[i]["comment"]) + "\""
-            subprocess.run(command, shell=True, executable="/bin/bash")
 
 if __name__ == "__main__":
     run_checks()
