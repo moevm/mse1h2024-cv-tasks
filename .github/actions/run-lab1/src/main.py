@@ -93,6 +93,7 @@ def run_checks():
 
 def write_comments(data):
     for i in range(len(data)):
+        print(data[i])
         if (data[i]["correct"]) and (data[i]["lab_tag"] == "lab1"):
             command = "gh pr comment " + str(data[i]["number"]) + " --body " + "\"" + str(data[i]["comment"]) + "\""
             subprocess.run(command, shell=True, executable="/bin/bash")
