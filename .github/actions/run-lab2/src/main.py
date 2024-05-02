@@ -6,6 +6,12 @@ import os
 import torch
 import subprocess
 
+def save_image_locally(image_name):
+    current_directory = os.getcwd()  # Get the current working directory
+    image_path = os.path.join(current_directory, image_name)  # Create the full path for the image
+    plt.savefig(image_path)  # Save the image in the current directory
+    print(f"Image saved locally as '{image_path}'.")
+
 class RunMetrics():
 
     def __init__(self):
@@ -86,6 +92,8 @@ def run_checks():
             plt.legend(loc='lower right')
             plt.grid(True)  # Add gridlines
             plt.show()
+            # Save the image locally in the current directory
+            save_image_locally('roc_curve.png')
 
     run_metrics.write_result(json.dumps(parsed_json))
 
