@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import subprocess
 from regular_expressions import *
 
 class PullRequestChecker():
@@ -9,6 +10,7 @@ class PullRequestChecker():
         self._title = pull_request["title"]
         self._files = pull_request["files"]
         self._number = pull_request["number"]
+        self._labels = pull_request["labels"]
         self._work_tag = None
         self._comment = ""
         self._checks = {
@@ -17,10 +19,32 @@ class PullRequestChecker():
             "contains_all_files": True
         }
 
+        if len(pull_request["labels"]) != 0 and \
+            all(label["name"] != "error" for label in self._labels) and \
+            any(label["name"] == "ok" for label in self._labels):
+            _, _, _, self._work_tag = self._title.split("_")
+            return
+
         self._check_title()
 
         if self._checks["title"]:
             self._check_files()
+
+        self._update_labels()
+
+    def _update_labels(self):
+        for label in self._labels:
+            label_name = label["name"]
+            command = f"gh pr edit {self._number} --remove-label '{label_name}'"
+            subprocess.run(command, shell=True, executable="/bin/bash")
+
+        if self._work_tag is not None:
+            command = f"gh pr edit {self._number} --add-label '{self._work_tag}'"
+            subprocess.run(command, shell=True, executable="/bin/bash")
+
+        ok_or_error = "ok" if all(self._checks[item] for item in self._checks) else "error"
+        command = f"gh pr edit {self._number} --add-label '{ok_or_error}'"
+        subprocess.run(command, shell=True, executable="/bin/bash")
 
     def _check_title(self):
         pull_request_title_re = self._get_pull_request_title_re()
