@@ -9,7 +9,7 @@ class PullRequestChecker():
         self._title = pull_request["title"]
         self._files = pull_request["files"]
         self._number = pull_request["number"]
-        self._lab_tag = ""
+        self._work_tag = None
         self._comment = ""
         self._checks = {
             "title": True,
@@ -30,14 +30,13 @@ class PullRequestChecker():
             self._comment += "Неверное название пулл-реквеста.\n"
 
     def _check_files(self):
-        group_number, last_name, first_name, lab_number = self._title.split("_")
-        self._lab_tag = lab_number
-        lab_number = lab_number[3:]
+        group_number, last_name, first_name, work_tag = self._title.split("_")
+        self._work_tag = work_tag
 
-        general_path = self._replace_dummies(GENERAL_PATH, group_number, last_name, first_name, lab_number) 
+        general_path = self._replace_dummies(GENERAL_PATH, group_number, last_name, first_name, work_tag) 
 
-        lab_files = FILES[int(lab_number) - 1]
-        lab_file_paths = self._get_lab_file_paths(group_number, last_name, first_name, lab_number)
+        lab_files = FILES[work_tag]
+        lab_file_paths = self._get_lab_file_paths(group_number, last_name, first_name, work_tag)
         lab_file_checks = [False for _ in range(len(lab_file_paths))]
         
         for file in self._files:
@@ -45,17 +44,20 @@ class PullRequestChecker():
 
             if not file_path.startswith(general_path):
                 self._checks["all_files_in_general_folder"] = False
-                self._comment += f"Файл {file_path} расположен не в общей папке пулл-реквеста {general_path}\n"
+                self._comment += f"Файл {file_path} расположен не в общей папке пулл-реквеста {general_path}.\n"
                 continue
 
             for i in range(len(lab_file_paths)):
                 if re.match(lab_file_paths[i], file_path) is not None:
                     lab_file_checks[i] = True
 
+        if any(lab_file_checks[i] == False for i in range(len(lab_file_paths))):
+            self._checks["contains_all_files"] = False
+            self._comment += f"Не найдены файлы:\n"
+
         for i in range(len(lab_file_paths)):
             if not lab_file_checks[i]:
-                self._checks["contains_all_files"] = False
-                self._comment += f"Не найден файл, содержащий {lab_files[i]['context']}\n"
+                self._comment += f"- {lab_files[i]['context']}\n"
 
         if all(self._checks[item] for item in self._checks):
             self._comment += "Пулл-реквест корректен.\n"
@@ -67,26 +69,25 @@ class PullRequestChecker():
         last_name_re = f"({'|'.join(last_names)})"
         first_name_re = f"({'|'.join(first_names)})"
 
-        labs_list = [str(item) for item in range(1, len(FILES) + 1)]
-        lab_numbers_re = f"({'|'.join(labs_list)})"
+        work_tags_re = f"({'|'.join(WORK_TAGS)})"
 
-        return f"^{group_number_re}_{last_name_re}_{first_name_re}_lab{lab_numbers_re}$"
+        return f"^{group_number_re}_{last_name_re}_{first_name_re}_{work_tags_re}$"
 
-    def _replace_dummies(self, input_string, group_number, last_name, first_name, lab_number):
+    def _replace_dummies(self, input_string, group_number, last_name, first_name, work_tag):
         return input_string \
                 .replace(r"\group_number", group_number) \
                 .replace(r"\last_name", last_name) \
                 .replace(r"\first_name", first_name) \
-                .replace(r"\lab_number", lab_number)
+                .replace(r"\work_tag", work_tag)
 
-    def _get_lab_file_paths(self, group_number, last_name, first_name, lab_number):
-        general_path = self._replace_dummies(GENERAL_PATH, group_number, last_name, first_name, lab_number) 
+    def _get_lab_file_paths(self, group_number, last_name, first_name, work_tag):
+        general_path = self._replace_dummies(GENERAL_PATH, group_number, last_name, first_name, work_tag) 
 
         result = []
-        lab_files = FILES[int(lab_number) - 1]
+        lab_files = FILES[work_tag]
         for file in lab_files:
-            path = self._replace_dummies(file["path"], group_number, last_name, first_name, lab_number)
-            file_name = self._replace_dummies(file["file_name"], group_number, last_name, first_name, lab_number) 
+            path = self._replace_dummies(file["path"], group_number, last_name, first_name, work_tag)
+            file_name = self._replace_dummies(file["file_name"], group_number, last_name, first_name, work_tag) 
             full_path = f"^{general_path}/{path}/{file_name}$"
             result.append(full_path)
 
@@ -97,7 +98,7 @@ class PullRequestChecker():
             "title": self._title,
             "number": self._number,
             "files": self._files,
-            "lab_tag": self._lab_tag,
+            "work_tag": self._work_tag,
             "comment": self._comment,
             "correct": all(self._checks[item] for item in self._checks)
         }
