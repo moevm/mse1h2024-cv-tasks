@@ -1,10 +1,10 @@
+import os
+import json
+import torch
+import onnxruntime
+from dataset import DatasetInterface
 from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator, resize
-from dataset import DatasetInterface
-import json
-import os
-import torch
-import subprocess
 
 def save_image_locally(image_name):
     current_directory = os.getcwd()  # Get the current working directory
@@ -58,19 +58,14 @@ def run_checks():
             obj = __import__(path[:-3], fromlist=[None])
             path = path.replace(".","/")
             
-            weights_file = path[:-8] + "weights.pth"
+            weights_file = path[:-8] + "weights.onnx"
             
-            if torch.cuda.is_available():
-                state_dict = torch.load(weights_file)  # Load the model's state dictionary
-            else:
-                state_dict = torch.load(weights_file, map_location=torch.device('cpu'))
-
-            obj.model.load_state_dict(state_dict)
+            obj.model = onnxruntime.InferenceSession(weights_file)
 
             eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene classification/train.csv",
-                                                              "./action/datasets/train-scene classification/train/"),
-                                  64, "./action/datasets/train-scene classification/train.csv")
-
+                                                  "./action/datasets/train-scene classification/train/"),
+                                        64, "./action/datasets/train-scene classification/train.csv",
+                            device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
             # Evaluate the model
             metrics, fpr, tpr = eva.evaluate()
@@ -78,8 +73,6 @@ def run_checks():
             # Print evaluation metrics
             interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
             for index, metric in enumerate(metrics.tolist()):
-                #print(f"{interpretation[index]}: {metric}")
-                #el["comment"] += f"{interpretation[index]}: {metric}\n"
                 run_metrics.write_message(ind, f"{interpretation[index]}: {metric}\n")
 
             # Plot ROC curve
