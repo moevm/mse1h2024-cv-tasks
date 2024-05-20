@@ -1,10 +1,10 @@
-from matplotlib import pyplot as plt
-from Evaluator import ModelEvaluator, resize
-from dataset import DatasetInterface
-import json
 import os
+import json
 import torch
 import subprocess
+from dataset import DatasetInterface
+from matplotlib import pyplot as plt
+from Evaluator import ModelEvaluator, resize
 
 
 class RunMetrics():
@@ -39,7 +39,7 @@ def run_checks():
     resize()
 
     for ind,el in enumerate(parsed_json):
-        if el["lab_tag"] != "cw":
+        if el["lab_tag"] != "cw1" and el["lab_tag"] != "cw2" and el["lab_tag"] != "cw3":
             continue
 
         if not el["correct"]:
@@ -61,11 +61,21 @@ def run_checks():
                 state_dict = torch.load(weights_file, map_location=torch.device('cpu'))
 
             obj.model.load_state_dict(state_dict)
+            
+            eva = None
 
-            eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene classification/train.csv",
-                                                              "./action/datasets/train-scene classification/train/"),
-                                  64, "./action/datasets/train-scene classification/train.csv")
-
+            if el["lab_tag"] != "cw1":
+                eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw1_dataset/train-scene classification/train.csv",
+                                                              "./action/cw1_dataset/train-scene classification/train/"),
+                                  64, "./action/cw1_dataset/train-scene classification/train.csv")
+            elif el["lab_tag"] != "cw2":
+                eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw2_dataset/train-scene classification/train.csv",
+                                                              "./action/cw2_dataset/train-scene classification/train/"),
+                                  64, "./action/cw2_dataset/train-scene classification/train.csv")
+            elif el["lab_tag"] != "cw3":
+                eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw3_dataset/train-scene classification/train.csv",
+                                                              "./action/cw3_dataset/train-scene classification/train/"),
+                                  64, "./action/cw3_dataset/train-scene classification/train.csv")
 
             # Evaluate the model
             metrics, fpr, tpr = eva.evaluate()
