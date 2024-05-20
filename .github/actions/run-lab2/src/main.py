@@ -5,6 +5,7 @@ import onnxruntime
 from dataset import DatasetInterface
 from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator, resize
+import torchvision.models as models
 
 def save_image_locally(image_name):
     current_directory = os.getcwd()  # Get the current working directory
@@ -61,7 +62,7 @@ def run_checks():
             weights_file = path[:-8] + "weights.onnx"
             
             obj.model = onnxruntime.InferenceSession(weights_file)
-
+            
             eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene classification/train.csv",
                                                   "./action/datasets/train-scene classification/train/"),
                                         64, "./action/datasets/train-scene classification/train.csv",
