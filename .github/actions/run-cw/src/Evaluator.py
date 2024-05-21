@@ -117,7 +117,7 @@ class ModelEvaluator:
 
         return fixed_metrics, fpr, tpr
 
-def resize(path="./action/datasets/train-scene classification/train", size=150):
+def resize(path="./action/cw2_dataset/cw2.2_dataset/images", size=150):
     """
     Resize images in a directory.
 

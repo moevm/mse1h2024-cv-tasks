@@ -64,9 +64,9 @@ def run_checks():
             
             eva = None
 
-            eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw2_dataset/train.csv",
-                                                              "./action/cw2_dataset/images/"),
-                                  64, "./action/cw2_dataset/train.csv")
+            eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw2_dataset/cw2.2_dataset/train.csv",
+                                                              "./action/cw2_dataset/cw2.2_dataset/images"),
+                                  64, "./action/cw2_dataset/cw2.2_dataset/train.csv")
            
             # Evaluate the model
             metrics, fpr, tpr = eva.evaluate()
