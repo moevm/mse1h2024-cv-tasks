@@ -1,10 +1,9 @@
-import torch
-from torch.utils.data import Dataset
 import os
+import torch
 import pandas as pd
-from torchvision.io import read_image
-
 import matplotlib.pyplot as plt
+from torch.utils.data import Dataset
+from torchvision.io import read_image
 from torch.utils.data import DataLoader
 
 class DatasetInterface(Dataset):

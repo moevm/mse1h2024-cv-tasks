@@ -27,7 +27,12 @@ jobs:
         uses: ./.github/actions/run-lab2
         with: 
           correctPullRequests: "${{ steps.lab1.outputs.correctPullRequests }}"
+      - name: Run Cw
+        id: cw
+        uses: ./.github/actions/run-cw
+        with: 
+          correctPullRequests: "${{ steps.lab2.outputs.correctPullRequests }}"
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
-          correctPullRequests: "${{ steps.lab2.outputs.correctPullRequests }}" 
+          correctPullRequests: "${{ steps.cw.outputs.correctPullRequests }}" 

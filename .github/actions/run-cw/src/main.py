@@ -1,17 +1,11 @@
 import os
 import json
 import torch
-import onnxruntime
+import subprocess
 from dataset import DatasetInterface
 from matplotlib import pyplot as plt
 from Evaluator import ModelEvaluator, resize
-import torchvision.models as models
 
-def save_image_locally(image_name):
-    current_directory = os.getcwd()  # Get the current working directory
-    image_path = os.path.join(current_directory, image_name)  # Create the full path for the image
-    plt.savefig(image_path)  # Save the image in the current directory
-    print(f"Image saved locally as '{image_path}'.")
 
 class RunMetrics():
 
@@ -45,7 +39,7 @@ def run_checks():
     resize()
 
     for ind,el in enumerate(parsed_json):
-        if el["work_tag"] != "lab2":
+        if el["work_tag"] != "cw":
             continue
 
         if not el["correct"]:
@@ -59,21 +53,29 @@ def run_checks():
             obj = __import__(path[:-3], fromlist=[None])
             path = path.replace(".","/")
             
-            weights_file = path[:-8] + "weights.onnx"
+            weights_file = path[:-8] + "weights.pth"
             
-            obj.model = onnxruntime.InferenceSession(weights_file)
-            
-            eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/lab2.2_dataset/train.csv",
-                                                  "./action/datasets/lab2.2_dataset/test/test"),
-                                        64, "./action/datasets/lab2.2_dataset/train.csv",
-                            device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+            if torch.cuda.is_available():
+                state_dict = torch.load(weights_file)  # Load the model's state dictionary
+            else:
+                state_dict = torch.load(weights_file, map_location=torch.device('cpu'))
 
+            obj.model.load_state_dict(state_dict)
+            
+            eva = None
+
+            eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw2_dataset/cw2.2_dataset/train.csv",
+                                                              "./action/cw2_dataset/cw2.2_dataset/images"),
+                                  64, "./action/cw2_dataset/cw2.2_dataset/train.csv")
+           
             # Evaluate the model
             metrics, fpr, tpr = eva.evaluate()
 
             # Print evaluation metrics
             interpretation = ["Average Precision", "Average Accuracy", "Average Recall", "Average F1-score", "Average ROC-AUC"]
             for index, metric in enumerate(metrics.tolist()):
+                #print(f"{interpretation[index]}: {metric}")
+                #el["comment"] += f"{interpretation[index]}: {metric}\n"
                 run_metrics.write_message(ind, f"{interpretation[index]}: {metric}\n")
 
             # Plot ROC curve
@@ -86,10 +88,9 @@ def run_checks():
             plt.legend(loc='lower right')
             plt.grid(True)  # Add gridlines
             plt.show()
-            # Save the image locally in the current directory
-            save_image_locally('roc_curve.png')
 
     run_metrics.write_result(json.dumps(parsed_json))
+
 
 if __name__ == "__main__":
     run_checks()
