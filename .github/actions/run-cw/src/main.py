@@ -39,7 +39,7 @@ def run_checks():
     resize()
 
     for ind,el in enumerate(parsed_json):
-        if el["lab_tag"] != "cw":
+        if el["work_tag"] != "cw":
             continue
 
         if not el["correct"]:
