@@ -9,7 +9,7 @@ jobs:
         id: check
         uses: ./.github/actions/check-pull-requests
       - run: mkdir pull-request-data
-      - name: Copy pull-requests files 
+      - name: Copy pull-requests files        
         uses: ./.github/actions/actions-to-docker
         with:
           correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
@@ -17,12 +17,22 @@ jobs:
           PUBLIC_SSH_KEY: "${{ secrets.PUBLIC_SSH_KEY }}"
           PRIVATE_SSH_KEY: "${{ secrets.PRIVATE_SSH_KEY }}"
       - uses: actions/checkout@v4.1.1
-      - name: Run Metrics
-        id: result
-        uses: ./.github/actions/run-metrics
-        with:
+      - name: Run Lab1
+        id: lab1
+        uses: ./.github/actions/run-lab1
+        with: 
           correctPullRequests: "${{ steps.check.outputs.correctPullRequests }}"
+      - name: Run Lab2
+        id: lab2
+        uses: ./.github/actions/run-lab2
+        with: 
+          correctPullRequests: "${{ steps.lab1.outputs.correctPullRequests }}"
+      - name: Run Cw
+        id: cw
+        uses: ./.github/actions/run-cw
+        with: 
+          correctPullRequests: "${{ steps.lab2.outputs.correctPullRequests }}"
       - name: Comment pull-requests
         uses: ./.github/actions/comment_writer
         with:
-          correctPullRequests: "${{ steps.result.outputs.correctPullRequests }}"
+          correctPullRequests: "${{ steps.cw.outputs.correctPullRequests }}" 

@@ -9,13 +9,15 @@ STUDENTS = [
     (r"[A-Za-z]*", r"[A-Za-z]*")
 ]
 
-GENERAL_PATH = r"\group_number_\last_name_\first_name/lab\lab_number"
+GENERAL_PATH = r"\group_number_\last_name_\first_name/\work_tag"
 
-FILES = [
-    [
+WORK_TAGS = ["lab1", "lab2", "prac1", "prac2", "prac3", "prac4", "cw"]
+
+FILES = {
+    work_tag: [
         {
             "path": r"report",
-            "file_name": r"\group_number_\last_name_\first_name_lab\lab_number.pdf", 
+            "file_name": r"\group_number_\last_name_\first_name_\work_tag.pdf", 
             "context": "отчет"
         },
         {
@@ -29,5 +31,5 @@ FILES = [
             "context": "ссылки на веса"
         }
     ]
-    for _ in range(5)    
-]
+    for work_tag in WORK_TAGS    
+}
