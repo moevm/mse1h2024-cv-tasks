@@ -39,7 +39,7 @@ def run_checks():
     resize()
 
     for ind,el in enumerate(parsed_json):
-        if el["lab_tag"] != "cw1" and el["lab_tag"] != "cw2" and el["lab_tag"] != "cw3":
+        if el["lab_tag"] != "cw":
             continue
 
         if not el["correct"]:
@@ -64,19 +64,10 @@ def run_checks():
             
             eva = None
 
-            if el["lab_tag"] != "cw1":
-                eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw1_dataset/train-scene classification/train.csv",
-                                                              "./action/cw1_dataset/train-scene classification/train/"),
-                                  64, "./action/cw1_dataset/train-scene classification/train.csv")
-            elif el["lab_tag"] != "cw2":
-                eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw2_dataset/train-scene classification/train.csv",
-                                                              "./action/cw2_dataset/train-scene classification/train/"),
-                                  64, "./action/cw2_dataset/train-scene classification/train.csv")
-            elif el["lab_tag"] != "cw3":
-                eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw3_dataset/train-scene classification/train.csv",
-                                                              "./action/cw3_dataset/train-scene classification/train/"),
-                                  64, "./action/cw3_dataset/train-scene classification/train.csv")
-
+            eva = ModelEvaluator(obj.model, DatasetInterface("./action/cw2_dataset/train.csv",
+                                                              "./action/cw2_dataset/images/"),
+                                  64, "./action/cw2_dataset/train.csv")
+           
             # Evaluate the model
             metrics, fpr, tpr = eva.evaluate()
 
