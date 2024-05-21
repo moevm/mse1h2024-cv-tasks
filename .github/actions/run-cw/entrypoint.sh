@@ -15,9 +15,9 @@ traverse $GITHUB_WORKSPACE/pull-request-data
 
 mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action
 mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets
-unzip /cw1_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/cw1_dataset > trash_tmp
+#unzip /cw1_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/cw1_dataset > trash_tmp
 unzip /cw2_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/cw2_dataset > trash_tmp
-unzip /cw3_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/cw3_dataset > trash_tmp
+#unzip /cw3_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/cw3_dataset > trash_tmp
 
 cd $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src
 
