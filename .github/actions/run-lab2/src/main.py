@@ -63,9 +63,9 @@ def run_checks():
             
             obj.model = onnxruntime.InferenceSession(weights_file)
             
-            eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/train-scene classification/train.csv",
-                                                  "./action/datasets/train-scene classification/train/"),
-                                        64, "./action/datasets/train-scene classification/train.csv",
+            eva = ModelEvaluator(obj.model, DatasetInterface("./action/datasets/lab2.2_dataset/train.csv",
+                                                  "./action/datasets/lab2.2_dataset/test/test"),
+                                        64, "./action/datasets/lab2.2_dataset/train.csv",
                             device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
             # Evaluate the model

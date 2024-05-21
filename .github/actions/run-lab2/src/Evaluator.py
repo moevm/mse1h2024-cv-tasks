@@ -42,8 +42,8 @@ class ModelEvaluator:
             raise ValueError("Unsupported model type. Must be either PyTorch model or ONNX model.")
 
         self.dataset = dataset
-        self.batch_size = 1
-        self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=False)
+        self.batch_size = batch_size
+        self.dataloader = DataLoader(self.dataset, shuffle=False)
         self.df = pd.read_csv(filename)
 
     def evaluate(self):
@@ -134,7 +134,7 @@ class ModelEvaluator:
         return fixed_metrics, fpr, tpr
 
 
-def resize(path="./action/datasets/train-scene classification/train", size=224):
+def resize(path="./action/datasets/lab2.2_dataset/test/test", size=224):
     """
     Resize images in a directory.
 

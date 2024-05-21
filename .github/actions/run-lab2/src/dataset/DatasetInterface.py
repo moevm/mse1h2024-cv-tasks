@@ -1,11 +1,11 @@
-import torch
-from torch.utils.data import Dataset
 import os
+import torch
 import pandas as pd
-from torchvision.io import read_image
-
 import matplotlib.pyplot as plt
+from torch.utils.data import Dataset
+from torchvision.io import read_image
 from torch.utils.data import DataLoader
+
 
 class DatasetInterface(Dataset):
     def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
@@ -18,7 +18,7 @@ class DatasetInterface(Dataset):
         transform (callable, optional): Optional transform to be applied to the image.
         target_transform (callable, optional): Optional transform to be applied to the label.
         """
-        self.img_labels = pd.read_csv(annotations_file) # Load image labels from CSV file
+        self.img_labels = pd.read_csv(annotations_file, index_col=0) # Load image labels from CSV file
         self.img_dir = img_dir
         self.transform = transform
         self.target_transform = target_transform
@@ -29,7 +29,9 @@ class DatasetInterface(Dataset):
 
     def __getitem__(self, index):
         """Returns a tuple (image, label) for the given index."""
-        img_path = os.path.join(self.img_dir, self.img_labels.iloc[index, 0]) # Get image path
+        image_name = str(self.img_labels.iloc[index, 0])
+        image_name = '0' * (8 - len(image_name)) + image_name 
+        img_path = os.path.join(self.img_dir,image_name) # Get image path
         image = read_image(img_path) # Read image using torchvision's read_image function
 
         label = self.img_labels.iloc[index, 1] # Get label for the image
@@ -43,6 +45,7 @@ class DatasetInterface(Dataset):
         return image, label
 
 batch_size = 64
+
 # example
 if __name__ == '__main__':
     # Create dataset instance

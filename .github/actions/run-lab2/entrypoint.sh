@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Функция для обхода папок
 traverse() {
     for dir in `find "$1"  -type d -name src`; do
@@ -15,11 +14,11 @@ traverse $GITHUB_WORKSPACE/pull-request-data
 
 mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action
 mkdir $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets
-unzip /lab1_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets > trash_tmp
+unzip /lab2_dataset.zip -d $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src/action/datasets > trash_tmp
 
 cd $GITHUB_WORKSPACE/$ACTION_WORKSPACE/src
 
 cp -r $GITHUB_WORKSPACE/pull-request-data . 
 
 python3 main.py
-# tail -f /dev/null
+#tail -f /dev/null
