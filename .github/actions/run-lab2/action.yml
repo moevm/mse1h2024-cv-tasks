@@ -1,0 +1,11 @@
+name: "Run metrics"
+description: "Run all metrics"
+outputs:
+  correctPullRequests:
+    description: "??"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    GH_TOKEN: ${{ github.token }}
+    ACTION_WORKSPACE: .github/actions/run-lab2

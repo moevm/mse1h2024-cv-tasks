@@ -4,6 +4,8 @@ from dataset import DatasetInterface
 import json
 import os
 import torch
+import subprocess
+
 
 class RunMetrics():
 
@@ -37,6 +39,9 @@ def run_checks():
     resize()
 
     for ind,el in enumerate(parsed_json):
+        if el["lab_tag"] != "lab1":
+            continue
+
         if not el["correct"]:
             continue
             
@@ -84,6 +89,7 @@ def run_checks():
             plt.show()
 
     run_metrics.write_result(json.dumps(parsed_json))
+
 
 if __name__ == "__main__":
     run_checks()
